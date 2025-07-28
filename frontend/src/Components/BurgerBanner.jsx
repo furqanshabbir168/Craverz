@@ -3,8 +3,10 @@ import friedimg from "../assets/fried-c.png";
 import pizzaimg from "../assets/pizza.png";
 import burgeraimg from "../assets/burger.png";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 function BurgerBanner() {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col md:flex-row gap-4 px-4 py-6">
       {/* Banner 1 */}
@@ -26,7 +28,7 @@ function BurgerBanner() {
             <h5 className="text-red-500 text-[20px] font-bold">On this week</h5>
             <h2 className="text-white text-2xl sm:text-3xl font-bold">CRUNCHY FRIED CHICKEN</h2>
             <h5 className="text-sm text-gray-200">Limited Time Offer</h5>
-            <button className="mt-2 px-5 py-2 bg-red-500 rounded text-white font-semibold hover:bg-white hover:text-red-500 transition duration-300 w-[200px]">
+            <button onClick={()=>{navigate('/shop')}} className="mt-2 px-5 py-2 bg-red-500 rounded text-white font-semibold hover:bg-white hover:text-red-500 transition duration-300 w-[200px]">
               Order Now
             </button>
           </div>
@@ -55,7 +57,7 @@ function BurgerBanner() {
             <h5 className="text-red-500 text-[20px] font-bold">Welcome Cravez</h5>
             <h2 className="text-white text-2xl sm:text-3xl font-bold">TODAY SPECIAL FOOD</h2>
             <h5 className="text-sm text-gray-200">Limited Time Offer</h5>
-            <button className="mt-2 px-5 py-2 bg-yellow-300 rounded text-black font-semibold hover:bg-white hover:text-black transition duration-300 w-[200px]">
+            <button onClick={()=>{navigate('/shop')}} className="mt-2 px-5 py-2 bg-yellow-300 rounded text-black font-semibold hover:bg-white hover:text-black transition duration-300 w-[200px]">
               Order Now
             </button>
           </div>
@@ -82,7 +84,7 @@ function BurgerBanner() {
             <h5 className="text-red-500 text-[20px] font-bold">On this week</h5>
             <h2 className="text-white text-2xl sm:text-3xl font-bold">SPICY GRILLED BURGER</h2>
             <h5 className="text-sm text-gray-200">Limited Time Offer</h5>
-            <button className="mt-2 px-5 py-2 bg-green-600 rounded text-white font-semibold hover:bg-white hover:text-green-600 transition duration-300 w-[200px]">
+            <button onClick={()=>{navigate('/shop')}} className="mt-2 px-5 py-2 bg-green-600 rounded text-white font-semibold hover:bg-white hover:text-green-600 transition duration-300 w-[200px]">
               Order Now
             </button>
           </div>

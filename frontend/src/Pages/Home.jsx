@@ -3,7 +3,6 @@ import BestSellingFoodSection from "../Components/BestSellingFood"
 import BurgerBanner from "../Components/BurgerBanner"
 import Chef from "../Components/Chef"
 import DisscountBanner from "../Components/DisscountBanner"
-import Footer from "../Components/Footer"
 import GallerySection from "../Components/GallerySection"
 import Hero from "../Components/Hero"
 import PizzaBanner from "../Components/PizzaBanner"
@@ -22,7 +21,6 @@ function Home(){
             <Chef/>
             <DisscountBanner/>
             <GallerySection/>
-            <Footer/>
         </div>
     )
 }

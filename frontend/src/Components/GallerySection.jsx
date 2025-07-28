@@ -1,8 +1,10 @@
 import { GalleryVertical } from 'lucide-react';
 import Gallery from '../assets/Gallery';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 function GallerySection() {
+  const navigate = useNavigate();
   return (
     <div className='flex flex-col items-center p-4 mx-auto'>
       <div className="flex items-center gap-4 text-red-500 mb-4">
@@ -18,7 +20,7 @@ function GallerySection() {
       >Our Food Gallery</motion.h2>
       
       <div className="flex flex-wrap justify-center gap-6 w-full px-2">
-        {Gallery.map((item, index) => (
+        {Gallery.filter((item=> item.atHomePage===true)).map((item, index) => (
           <motion.div
             key={item.id}
             initial={{ opacity: 0, y: 30 }}
@@ -43,7 +45,7 @@ function GallerySection() {
         ))}
       </div>
 
-      <button className="mt-8 px-6 py-3 bg-red-500 text-white font-medium rounded-full hover:bg-red-600 transition">
+      <button onClick={()=>{navigate('/gallery')}} className="mt-8 px-6 py-3 bg-red-500 text-white font-medium rounded-full hover:bg-red-600 transition cursor-pointer">
         EXPLORE MORE
       </button>
     </div>

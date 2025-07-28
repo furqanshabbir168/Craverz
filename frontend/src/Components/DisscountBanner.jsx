@@ -3,9 +3,11 @@ import bg from '../assets/bg-2.jpg';
 import banner from '../assets/burger-3.webp';
 import { BadgePercent } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 function DisscountBanner() {
   const [timeLeft, setTimeLeft] = useState(10 * 60 * 60 + 35 * 60 + 10); // 10h 35m 10s in seconds
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -26,7 +28,7 @@ function DisscountBanner() {
 
   return (
     <div
-      className="relative w-full flex flex-col lg:flex-row items-center justify-between px-8 bg-black/40 bg-cover bg-center pt-8"
+      className="relative w-full flex flex-col lg:flex-row items-center justify-between px-8 bg-black/40 bg-cover bg-center pt-8 pb-12 sm:pb-8 lg:pb-0"
       style={{ backgroundImage: `url(${bg})` }}
     >
       <img
@@ -43,19 +45,19 @@ function DisscountBanner() {
         </div>
 
         <motion.h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-8"
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
-        viewport={{ once: true, amount: 0.2 }}
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
+          viewport={{ once: true, amount: 0.2 }}
         >
           Get 30% Discount Every Item
         </motion.h2>
 
         <motion.div className="flex flex-row gap-3 mb-4"
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 1, ease: "easeOut" }}
-        viewport={{ once: true, amount: 0.2 }}
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1, ease: "easeOut" }}
+          viewport={{ once: true, amount: 0.2 }}
         >
           <div className="flex flex-col items-center px-5 py-4 border-2 border-yellow-500 bg-yellow-500 font-bold text-white rounded">
             <h2 className="text-2xl">{h}</h2>
@@ -72,10 +74,11 @@ function DisscountBanner() {
         </motion.div>
 
         <motion.button className="mt-2 px-5 py-2 bg-red-500 rounded text-white font-semibold hover:bg-yellow-500 hover:text-white transition duration-300 w-[200px]"
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 1.5, ease: "easeOut" }}
-        viewport={{ once: true, amount: 0.2 }}
+          onClick={() => { navigate('/shop') }}
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.5, ease: "easeOut" }}
+          viewport={{ once: true, amount: 0.2 }}
         >
           Order Now
         </motion.button>

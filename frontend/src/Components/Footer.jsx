@@ -8,8 +8,8 @@ function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-12">
         {/* Brand & About */}
         <motion.div className="flex-1 text-center md:text-left"
-        initial={{ opacity: 0, x: 10 }}
-        whileInView={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
         viewport={{ once: true, amount: 0.2 }}
         >
@@ -30,8 +30,8 @@ function Footer() {
 
         {/* Company Links */}
         <motion.div className="flex-1 text-center md:text-left"
-        initial={{ opacity: 0, x: 10 }}
-        whileInView={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 1, ease: "easeOut" }}
         viewport={{ once: true, amount: 0.2 }}
         >
@@ -52,8 +52,8 @@ function Footer() {
 
         {/* Contact Info */}
         <motion.div className="flex-1 text-center md:text-left"
-        initial={{ opacity: 0, x: 10 }}
-        whileInView={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 1.5, ease: "easeOut" }}
         viewport={{ once: true, amount: 0.2 }}
         >

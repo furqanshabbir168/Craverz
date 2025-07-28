@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import bg from "../assets/bg-banner-3.webp";
 import banner from "../assets/pizza-banner-bg.png";
 import {motion} from 'framer-motion'
 
 function PizzaBanner() {
+  const navigate = useNavigate();
   return (
     <div
       className="relative w-full flex items-center justify-center px-4 py-10 sm:py-16"
@@ -34,6 +36,7 @@ function PizzaBanner() {
           >LIMITED TIME OFFERS</motion.p>
 
           <motion.button className="mt-4 px-5 py-2 bg-red-500 rounded text-white font-semibold hover:bg-white hover:text-red-500 transition duration-300 w-[200px]"
+          onClick={()=>{navigate('/shop')}}
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 2, ease: "easeOut" }}

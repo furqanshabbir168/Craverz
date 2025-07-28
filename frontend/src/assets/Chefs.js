@@ -25,6 +25,7 @@ const Chefs = [
     image: three,
   },
   {
+    id:4,
     name: "Darrell Steward",
     position: "Pastry Specialist",
     image: four,
