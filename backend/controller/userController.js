@@ -1,12 +1,24 @@
 import userModel from "../models/userModel.js";
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import validator from 'validator';
 import { sendEmail } from "../utils/emailService.js";
+import { inngest } from "../inngest/index.js"; // make sure this import exists
 
 // REGISTER USER
 async function registerUser(req, res) {
   try {
     const { name, email, password } = req.body;
+
+    // Validate email format
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({ message: "Invalid email address" });
+    }
+
+    // check password length
+    if (!password || password.length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters long." });
+    }
 
     // Check if user exists
     const emailExist = await userModel.findOne({ email });
@@ -27,21 +39,46 @@ async function registerUser(req, res) {
     });
 
     // Send email with styled HTML
-    await sendEmail(email, "Craverz Email Verification", `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; border-radius: 8px; background-color: #fff;">
-        <h2 style="text-align: center; color: #e63946;">🍔 Welcome to <span style="color: #1d3557;">Craverz</span></h2>
-        <p style="font-size: 16px; color: #333;">Hi <strong>${name}</strong>,</p>
-        <p style="font-size: 16px; color: #333;">
-          Thank you for signing up on <strong>Craverz</strong>. To verify your email, use the OTP below:
-        </p>
-        <div style="text-align: center; margin: 24px 0;">
-          <span style="font-size: 32px; font-weight: bold; color: #1d3557; letter-spacing: 4px;">${otp}</span>
-        </div>
-        <p style="font-size: 14px; color: #555;">This OTP is valid for <strong>2 minutes</strong>. Do not share it with anyone.</p>
-        <hr style="margin: 24px 0;" />
-        <p style="font-size: 12px; color: #999;">If you didn’t request this, ignore the email.</p>
-      </div>
-    `);
+    await sendEmail(email, "Cravez Email Verification", `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; border-radius: 8px; background-color: #ffffff;">
+    <h2 style="text-align: center; color: #e63946;">🍔 Welcome to <span style="color: #e63946; font-weight: bold;">CRAVEZ</span></h2>
+
+    <p style="font-size: 16px; color: #333;">Dear <strong>${name}</strong>,</p>
+
+    <p style="font-size: 16px; color: #333; line-height: 1.6;">
+      We're thrilled to have you join <strong style="color: #e63946;">CRAVEZ</strong> – your ultimate destination for fast, fresh, and delicious food delivered right to your doorstep.
+      <br /><br />
+      To complete your registration and ensure your account's security, please verify your email by entering the One-Time Password (OTP) provided below.
+    </p>
+
+    <div style="text-align: center; margin: 30px 0;">
+      <span style="font-size: 36px; font-weight: bold; color: #1d3557; letter-spacing: 6px;">${otp}</span>
+    </div>
+
+    <p style="font-size: 14px; color: #555; line-height: 1.6;">
+      🔐 This OTP is valid for <strong>2 minutes</strong> only. For your safety, please do not share this code with anyone. If you did not sign up for <strong style="color: #e63946;">CRAVEZ</strong>, please disregard this email.
+    </p>
+
+    <hr style="margin: 32px 0;" />
+
+    <p style="font-size: 14px; color: #333; line-height: 1.6;">
+      If you have any questions or need help, feel free to reply to this email or reach out to our support team anytime.
+      <br />
+      We're here to ensure your experience with <strong style="color: #e63946;">CRAVEZ</strong> is nothing short of delicious!
+    </p>
+
+    <p style="font-size: 14px; color: #999; margin-top: 32px;">
+      Warm regards,<br />
+      The <strong style="color: #e63946;">CRAVEZ</strong> Team
+    </p>
+  </div>
+`);
+// triggred inngest funtion
+    await inngest.send({
+      name: "user/unverified.registered",
+      data: { email }
+    });
+
 
     res.status(201).json({ message: "OTP sent to email. Please verify." });
 

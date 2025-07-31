@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import { connectDB } from './config/dataBase.js';
 import userRouter from './routes/userRoutes.js';
+import { serve } from "inngest/express";
+import { inngest, functions } from "./inngest/index.js"
 
 const PORT = 4000;
 const app = express();
@@ -20,6 +22,8 @@ app.get('/', (req, res) => {
 
 // User Routes
 app.use('/api/user', userRouter);
+// inngest routes
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 // Start Server
 app.listen(PORT, () => {
