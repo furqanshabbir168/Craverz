@@ -1,15 +1,81 @@
 import { UserCircle } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import photo from "../assets/account-img.png";
 import { useNavigate } from "react-router-dom";
+import { ShopContext } from "../Context/ShopContext";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function Account() {
-  const [currentState, setCurrentState] = useState("login");
+  const { url } = useContext(ShopContext);
   const navigate = useNavigate();
 
+  const [currentState, setCurrentState] = useState("login");
+  const [loading, setLoading] = useState(false);
+  const [otpStage, setOtpStage] = useState(false);
+
+  const [data, setData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const [otp, setOtp] = useState("");
+
+  function onChangeHandle(event) {
+    const { name, value } = event.target;
+    setData((prev) => ({ ...prev, [name]: value }));
+  }
+
+  async function onSubmitHandle(event) {
+    event.preventDefault();
+
+    if (currentState === "signup") {
+      const newURL = `${url}/api/user/register`;
+      setLoading(true);
+
+      try {
+        const response = await axios.post(newURL, data);
+        if (response.status === 201) {
+          toast.success("OTP sent! Please verify within 2 minutes.");
+          setOtpStage(true);
+        } else {
+          toast.error(response.data?.message || "Something went wrong.");
+        }
+      } catch (error) {
+        const msg = error.response?.data?.message || "Signup failed.";
+        toast.error(msg);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }
+
+  async function handleOtpVerify() {
+    if (!data.email || !otp) return toast.error("Email or OTP missing");
+
+    try {
+      const response = await axios.post(`${url}/api/user/verify`, {
+        email: data.email,
+        otp,
+      });
+
+      if (response.status === 200) {
+        toast.success("Email verified successfully!");
+        localStorage.setItem("token", response.data.token);
+        navigate("/");
+      } else {
+        toast.error(response.data?.message || "OTP verification failed");
+      }
+    } catch (error) {
+      const msg = error.response?.data?.message || "Verification failed.";
+      toast.error(msg);
+    }
+  }
+
   return (
-    <div className="flex flex-col items-center px-4 py-10 bg-gray-200">
-      {/* Section Heading */}
+    <div className="flex flex-col items-center px-4 py-10 bg-gray-200 min-h-screen">
+      {/* Heading */}
       <div className="flex items-center gap-4 text-red-500 mb-4">
         <UserCircle className="w-6 h-6" />
         <p className="text-xl font-semibold text-gray-800">My Account</p>
@@ -22,7 +88,10 @@ function Account() {
       {/* Content Wrapper */}
       <div className="flex flex-col-reverse lg:flex-row justify-between items-center gap-12 max-w-5xl w-full">
         {/* Form Section */}
-        <form className="flex flex-col gap-4 w-full lg:w-1/2 bg-white p-6 rounded-2xl shadow-md">
+        <form
+          onSubmit={onSubmitHandle}
+          className="flex flex-col gap-4 w-full lg:w-1/2 bg-white p-6 rounded-2xl shadow-md"
+        >
           <h2 className="text-xl font-bold text-gray-800">
             {currentState === "signup" ? "Let's Get You Started" : "Welcome Back"}
           </h2>
@@ -32,6 +101,10 @@ function Account() {
             <input
               type="text"
               placeholder="Name"
+              name="name"
+              value={data.name}
+              onChange={onChangeHandle}
+              required
               className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
             />
           )}
@@ -39,12 +112,20 @@ function Account() {
           <input
             type="email"
             placeholder="Email"
+            name="email"
+            value={data.email}
+            onChange={onChangeHandle}
+            required
             className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
           />
 
           <input
             type="password"
             placeholder="Password"
+            name="password"
+            value={data.password}
+            onChange={onChangeHandle}
+            required
             className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
           />
 
@@ -56,25 +137,62 @@ function Account() {
 
           {currentState === "signup" && (
             <div className="flex items-start gap-2 text-sm text-gray-600">
-              <input type="checkbox" className="mt-1" />
+              <input type="checkbox" className="mt-1" required />
               <p>
                 By signing up, you agree to our{" "}
-                <span onClick={()=>{navigate('/blog')}} className="text-red-500 underline cursor-pointer">
+                <span
+                  onClick={() => navigate("/blog")}
+                  className="text-red-500 underline cursor-pointer"
+                >
                   Terms & Conditions
                 </span>{" "}
                 and{" "}
-                <span onClick={()=>{navigate('/blog')}} className="text-red-500 underline cursor-pointer">
+                <span
+                  onClick={() => navigate("/blog")}
+                  className="text-red-500 underline cursor-pointer"
+                >
                   Privacy Policy
                 </span>
               </p>
             </div>
           )}
 
-          <button className="bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition">
-            {currentState === "signup" ? "Create Account" : "Log In"}
+          <button
+            type="submit"
+            disabled={loading}
+            className={`bg-red-500 text-white py-2 rounded-md transition ${
+              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600"
+            }`}
+          >
+            {loading
+              ? "Please wait..."
+              : currentState === "signup"
+              ? "Create Account"
+              : "Log In"}
           </button>
 
-          {/* Google Button */}
+          {/* OTP Input */}
+          {otpStage && (
+            <div className="flex flex-col gap-3">
+              <input
+                type="text"
+                maxLength={6}
+                placeholder="Enter OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
+              />
+              <button
+                type="button"
+                onClick={handleOtpVerify}
+                className="bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition"
+              >
+                Verify OTP
+              </button>
+            </div>
+          )}
+
+          {/* Google Login (Optional) */}
           <button
             type="button"
             className="flex items-center justify-center gap-3 border border-gray-400 rounded-md py-2 text-sm hover:bg-gray-100 transition"
@@ -106,14 +224,18 @@ function Account() {
               : "Log in with Google"}
           </button>
 
-          {/* Toggle */}
+          {/* Toggle Login / Signup */}
           <p className="text-sm text-gray-600 text-center">
             {currentState === "signup" ? (
               <>
                 Already have an account?{" "}
                 <span
                   className="text-red-500 cursor-pointer underline"
-                  onClick={() => setCurrentState("login")}
+                  onClick={() => {
+                    setCurrentState("login");
+                    setOtpStage(false);
+                    setOtp("");
+                  }}
                 >
                   Log In
                 </span>
@@ -123,7 +245,11 @@ function Account() {
                 Don't have an account?{" "}
                 <span
                   className="text-red-500 cursor-pointer underline"
-                  onClick={() => setCurrentState("signup")}
+                  onClick={() => {
+                    setCurrentState("signup");
+                    setOtpStage(false);
+                    setOtp("");
+                  }}
                 >
                   Sign Up
                 </span>

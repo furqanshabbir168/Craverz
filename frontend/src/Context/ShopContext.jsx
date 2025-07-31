@@ -5,7 +5,9 @@ export const ShopContext = createContext(null);
 
 function ShopContextProvider(props){
 
-    const ContextValue = {Menu}
+    const url = 'https://craverz.vercel.app'
+
+    const ContextValue = {Menu,url}
 
     return(
         <ShopContext.Provider value={ContextValue}>

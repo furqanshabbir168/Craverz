@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import validator from 'validator';
 import { sendEmail } from "../utils/emailService.js";
 import { inngest } from "../inngest/index.js";
+import jwt from 'jsonwebtoken'
 
 // REGISTER USER
 async function registerUser(req, res) {
@@ -114,18 +115,33 @@ async function verifyOtp(req, res) {
       return res.status(400).json({ message: "Invalid OTP" });
     }
 
-    // Success — update user
+    // Update verification status
     user.isVerified = true;
     user.otp = undefined;
     await user.save();
 
-    res.status(200).json({ message: "Email verified successfully" });
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" } // adjust as needed
+    );
+
+    res.status(200).json({
+      message: "Email verified successfully",
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isVerified: user.isVerified,
+      }
+    });
 
   } catch (error) {
     console.error("Verify OTP Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 }
-
 
 export { registerUser , verifyOtp};

@@ -17,7 +17,7 @@ import FAQ from "./Pages/FAQ";
 import MyAccount from "./Pages/MyAccount";
 import Contact from "./Pages/Contact";
 import BlogPage from "./Pages/BlogPage";
-
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const location = useLocation();
@@ -33,7 +33,28 @@ function App() {
 
   return (
     <div>
-      {loading && <Loader/>}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: "#1d3557", // dark blue (or any color)
+            color: "#fff", // white text
+          },
+          success: {
+            iconTheme: {
+              primary: "#4ade80", // green
+              secondary: "#fff",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "#f87171", // red
+              secondary: "#fff",
+            },
+          },
+        }}
+      />
+      {loading && <Loader />}
       <NavBar />
       <ScrollToTop />
       <Routes>
@@ -41,14 +62,14 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/menu" element={<MenuPage />} />
-        <Route path="/gallery" element={<GalleryPage/>}/>
-        <Route path="/services" element={<Services/>}/>
-        <Route path="/testimonials" element={<Testimonials/>}/>
-        <Route path="/reservations" element={<Reservation/>}/>
-        <Route path="/faqs" element={<FAQ/>}/>
-        <Route path="/account" element={<MyAccount/>}/>
-        <Route path="/contact" element={<Contact/>}/>
-        <Route path="/blog" element={<BlogPage/>}/>
+        <Route path="/gallery" element={<GalleryPage />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/testimonials" element={<Testimonials />} />
+        <Route path="/reservations" element={<Reservation />} />
+        <Route path="/faqs" element={<FAQ />} />
+        <Route path="/account" element={<MyAccount />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/blog" element={<BlogPage />} />
       </Routes>
       <Footer />
     </div>
