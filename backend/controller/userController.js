@@ -3,84 +3,86 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import validator from 'validator';
 import { sendEmail } from "../utils/emailService.js";
-import { inngest } from "../inngest/index.js"; // make sure this import exists
+import { inngest } from "../inngest/index.js";
 
 // REGISTER USER
 async function registerUser(req, res) {
   try {
     const { name, email, password } = req.body;
 
-    // Validate email format
+    // Validate email
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Invalid email address" });
     }
 
-    // check password length
+    // Validate password
     if (!password || password.length < 8) {
       return res.status(400).json({ message: "Password must be at least 8 characters long." });
     }
 
     // Check if user exists
-    const emailExist = await userModel.findOne({ email });
-    if (emailExist) return res.status(400).json({ message: "User already exists" });
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
 
-    // Hash password & OTP
+    // Hash password and OTP
     const hashedPassword = await bcrypt.hash(password, 10);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
-    // Create user
+    // Save user with unverified status
     const newUser = await userModel.create({
       name,
       email,
       password: hashedPassword,
       otp: hashedOtp,
-      otpExpiry: Date.now() + 2 * 60 * 1000 // 2 minutes
+      isVerified: false
     });
 
-    // Send email with styled HTML
+    // Send OTP email
     await sendEmail(email, "Cravez Email Verification", `
-  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; border-radius: 8px; background-color: #ffffff;">
-    <h2 style="text-align: center; color: #e63946;">🍔 Welcome to <span style="color: #e63946; font-weight: bold;">CRAVEZ</span></h2>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; border-radius: 8px; background-color: #ffffff;">
+        <h2 style="text-align: center; color: #e63946;">🍔 Welcome to <span style="color: #e63946; font-weight: bold;">CRAVEZ</span></h2>
 
-    <p style="font-size: 16px; color: #333;">Dear <strong>${name}</strong>,</p>
+        <p style="font-size: 16px; color: #333;">Dear <strong>${name}</strong>,</p>
 
-    <p style="font-size: 16px; color: #333; line-height: 1.6;">
-      We're thrilled to have you join <strong style="color: #e63946;">CRAVEZ</strong> – your ultimate destination for fast, fresh, and delicious food delivered right to your doorstep.
-      <br /><br />
-      To complete your registration and ensure your account's security, please verify your email by entering the One-Time Password (OTP) provided below.
-    </p>
+        <p style="font-size: 16px; color: #333; line-height: 1.6;">
+          We're thrilled to have you join <strong style="color: #e63946;">CRAVEZ</strong> – your ultimate destination for fast, fresh, and delicious food delivered right to your doorstep.
+          <br /><br />
+          To complete your registration and ensure your account's security, please verify your email by entering the One-Time Password (OTP) provided below.
+        </p>
 
-    <div style="text-align: center; margin: 30px 0;">
-      <span style="font-size: 36px; font-weight: bold; color: #1d3557; letter-spacing: 6px;">${otp}</span>
-    </div>
+        <div style="text-align: center; margin: 30px 0;">
+          <span style="font-size: 36px; font-weight: bold; color: #1d3557; letter-spacing: 6px;">${otp}</span>
+        </div>
 
-    <p style="font-size: 14px; color: #555; line-height: 1.6;">
-      🔐 This OTP is valid for <strong>2 minutes</strong> only. For your safety, please do not share this code with anyone. If you did not sign up for <strong style="color: #e63946;">CRAVEZ</strong>, please disregard this email.
-    </p>
+        <p style="font-size: 14px; color: #555; line-height: 1.6;">
+          🔐 This OTP is valid for <strong>2 minutes</strong> only. For your safety, please do not share this code with anyone. If you did not sign up for <strong style="color: #e63946;">CRAVEZ</strong>, please disregard this email.
+        </p>
 
-    <hr style="margin: 32px 0;" />
+        <hr style="margin: 32px 0;" />
 
-    <p style="font-size: 14px; color: #333; line-height: 1.6;">
-      If you have any questions or need help, feel free to reply to this email or reach out to our support team anytime.
-      <br />
-      We're here to ensure your experience with <strong style="color: #e63946;">CRAVEZ</strong> is nothing short of delicious!
-    </p>
+        <p style="font-size: 14px; color: #333; line-height: 1.6;">
+          If you have any questions or need help, feel free to reply to this email or reach out to our support team anytime.
+          <br />
+          We're here to ensure your experience with <strong style="color: #e63946;">CRAVEZ</strong> is nothing short of delicious!
+        </p>
 
-    <p style="font-size: 14px; color: #999; margin-top: 32px;">
-      Warm regards,<br />
-      The <strong style="color: #e63946;">CRAVEZ</strong> Team
-    </p>
-  </div>
-`);
-// triggred inngest funtion
+        <p style="font-size: 14px; color: #999; margin-top: 32px;">
+          Warm regards,<br />
+          The <strong style="color: #e63946;">CRAVEZ</strong> Team
+        </p>
+      </div>
+    `);
+
+    // Trigger Inngest function to delete unverified user after 2 minutes
     await inngest.send({
       name: "user/unverified.registered",
       data: { email }
     });
 
-
-    res.status(201).json({ message: "OTP sent to email. Please verify." });
+    res.status(201).json({ message: "OTP sent to email. Please verify within 2 minutes." });
 
   } catch (error) {
     console.error("Register Error:", error);
@@ -106,14 +108,6 @@ async function verifyOtp(req, res) {
       return res.status(400).json({ message: "User is already verified" });
     }
 
-    // Check OTP expiry
-    if (Date.now() > user.otpExpiry) {
-      await userModel.deleteOne({ email }); // Delete user on expiry
-      return res.status(400).json({
-        message: "OTP expired. Please register again. Your data has been removed.",
-      });
-    }
-
     const hashedInputOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
     if (hashedInputOtp !== user.otp) {
@@ -123,7 +117,6 @@ async function verifyOtp(req, res) {
     // Success — update user
     user.isVerified = true;
     user.otp = undefined;
-    user.otpExpiry = undefined;
     await user.save();
 
     res.status(200).json({ message: "Email verified successfully" });
@@ -134,4 +127,5 @@ async function verifyOtp(req, res) {
   }
 }
 
-export { registerUser, verifyOtp };
+
+export { registerUser , verifyOtp};
