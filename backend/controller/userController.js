@@ -143,5 +143,51 @@ async function verifyOtp(req, res) {
     res.status(500).json({ message: "Server error" });
   }
 }
+// LOGIN USER
+async function loginUser(req, res) {
+  try {
+    const { email, password } = req.body;
 
-export { registerUser , verifyOtp};
+    // Check if user exists
+    const userExist = await userModel.findOne({ email });
+    if (!userExist) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if user is verified
+    if (!userExist.isVerified) {
+      return res.status(403).json({ message: "Please verify your email first" });
+    }
+
+    // Compare password
+    const passwordMatched = await bcrypt.compare(password, userExist.password);
+    if (!passwordMatched) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: userExist._id, email: userExist.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        _id: userExist._id,
+        name: userExist.name,
+        email: userExist.email,
+        isVerified: userExist.isVerified,
+      }
+    });
+
+  } catch (error) {
+    console.error("Login Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+
+export { registerUser , verifyOtp , loginUser};

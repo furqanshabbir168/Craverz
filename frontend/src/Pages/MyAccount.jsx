@@ -1,13 +1,21 @@
-import Account from "../Components/Account"
-import TopBanner from "../Components/TopBanner"
+import { useContext } from "react";
+import Account from "../Components/Account";
+import TopBanner from "../Components/TopBanner";
+import { ShopContext } from "../Context/ShopContext";
 
 
-function MyAccount(){
-    return(
-        <div>
-            <TopBanner/>
-            <Account/>
-        </div>
-    )
+function MyAccount() {
+  const { token, loadingToken } = useContext(ShopContext);
+  
+
+  if (loadingToken) return null; // or show a mini loader here
+
+  return (
+    <div>
+      {token=== "" ? <TopBanner/> : <></>}
+      {token === "" ? <Account /> : <DashBoardPage/>}
+    </div>
+  );
 }
-export default MyAccount
+
+export default MyAccount;
