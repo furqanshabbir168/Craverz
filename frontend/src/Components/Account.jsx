@@ -6,12 +6,14 @@ import { ShopContext } from "../Context/ShopContext";
 import axios from "axios";
 import toast from "react-hot-toast";
 import OTP from "../Components/OTP";
+import ForgotPasswordModal from "../Components/ForgotPasswordModal"; // <-- new import
 
 function Account() {
   const { url , setToken} = useContext(ShopContext);
   const [loading, setLoading] = useState(false);
   const [currentState, setCurrentState] = useState("login");
   const [showOtpModal, setShowOtpModal] = useState(false);
+  const [showForgotModal, setShowForgotModal] = useState(false); // <-- forgot modal state
   const [userEmail, setUserEmail] = useState("");
   const [data, setData] = useState({
     name: "",
@@ -83,8 +85,14 @@ function Account() {
 
   return (
     <div className="flex flex-col items-center px-4 py-10 bg-gray-200 relative">
+      {/* Signup OTP Modal */}
       {showOtpModal && (
         <OTP email={userEmail} onClose={() => setShowOtpModal(false)} />
+      )}
+
+      {/* Forgot Password Modal */}
+      {showForgotModal && (
+        <ForgotPasswordModal onClose={() => setShowForgotModal(false)} />
       )}
 
       <div className="flex items-center gap-4 text-red-500 mb-4">
@@ -145,7 +153,10 @@ function Account() {
           />
 
           {currentState === "login" && (
-            <span className="text-sm text-red-500 cursor-pointer hover:underline">
+            <span
+              onClick={() => setShowForgotModal(true)} // <-- open modal here
+              className="text-sm text-red-500 cursor-pointer hover:underline"
+            >
               Forgot Password?
             </span>
           )}

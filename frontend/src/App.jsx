@@ -25,6 +25,8 @@ import MyAccount from "./Pages/MyAccount";
 import AccountLayout from "./Components/AccountLayout";
 import Dashboard from "./Components/DashBoard";
 import Profile from "./Components/Profile";
+import NotFound from "./Components/NotFound";
+import Cart from "./Components/Cart";
 
 // import more account pages here as needed
 
@@ -91,6 +93,7 @@ function App() {
         <Route path="/faqs" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/blog" element={<BlogPage />} />
+        <Route path="*" element={<NotFound/>}/>
 
         {/* Auth Page (login/signup) */}
         {!token && <Route path="/account" element={<MyAccount />} />}
@@ -102,6 +105,7 @@ function App() {
         >
           <Route path="/myaccount/dashboard" element={<Dashboard/>}/>
           <Route path="/myaccount/profile" element={<Profile/>}/>
+          <Route path="/myaccount/cart" element={<Cart/>}/>
         </Route>
       </Routes>
 

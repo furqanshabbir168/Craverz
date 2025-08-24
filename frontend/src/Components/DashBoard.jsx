@@ -1,84 +1,151 @@
-import { Store, CalendarCheck, GalleryVertical, Info } from "lucide-react";
-import img from "../assets/welcome.png";
+import { HelpCircle, Settings, Bell } from "lucide-react";
+import profilepic from "../assets/dp.jpg";
+import PopularFoods from "../assets/PopularFoods";
+import BestSellingFood from "../assets/BestSellingFood";
+import bg from "../assets/dash.jpg";
+import bike from "../assets/del-boy.png";
 import { useNavigate } from "react-router-dom";
+import { useContext, useState , useEffect} from "react";
+import axios from 'axios'
+import { ShopContext } from "../Context/ShopContext";
+import toast from 'react-hot-toast'
 
-function DashBoard() {
+function Dashboard() {
+  const [ name , setName ] = useState("null");
   const navigate = useNavigate();
+  const { token , url } = useContext(ShopContext);
 
-  const navBoxes = [
-    {
-      title: "Visit Our Shop",
-      desc: "Explore our fast food menu and order your cravings.",
-      icon: <Store className="w-6 h-6 text-red-500" />,
-      path: "/shop",
-    },
-    {
-      title: "Reserve a Table",
-      desc: "Book a table at your favorite Craverz location.",
-      icon: <CalendarCheck className="w-6 h-6 text-red-500" />,
-      path: "/reservation",
-    },
-    {
-      title: "View Gallery",
-      desc: "Take a peek at our sizzling dishes and vibe.",
-      icon: <GalleryVertical className="w-6 h-6 text-red-500" />,
-      path: "/gallery",
-    },
-    {
-      title: "About Us",
-      desc: "Learn more about our food journey and passion.",
-      icon: <Info className="w-6 h-6 text-red-500" />,
-      path: "/about",
-    },
-  ];
+   // Fetch user profile when dashboard mounts
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get(`${url}/api/user/profile`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        if (res.data.success) {
+          setName(res.data.user.name); // only take name
+        } else {
+          console.log("Profile error:", res.data.message);
+        }
+      } catch (error) {
+        console.error("Profile fetch failed:", error);
+      }
+    };
+
+    if (token) {
+      fetchProfile();
+    }
+  }, [token, url]);
+
 
   return (
-    <div className="bg-gray-200">
-      <div className="bg-gray-50 min-h-[92vh] px-4 flex flex-col items-center">
-      <div className="max-w-[1300px] w-full">
-        {/* Top Greeting */}
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Hello, username!</h2>
-
-        {/* Content Section */}
-        <div className="flex flex-col lg:flex-row items-center gap-10">
-          {/* Left Burger Image */}
-          <div className="w-full lg:w-1/2 flex justify-center">
-            <img src={img} alt="burger" className="max-w-full h-auto rounded-xl" />
-          </div>
-
-          {/* Right Boxes Section */}
-          <div className="w-full lg:w-1/2">
-            {/* Section Title */}
-            <h1 className="text-center text-2xl sm:text-3xl font-bold text-gray-800 mb-6">
-              Welcome to Craverz!
-            </h1>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {navBoxes.map((box, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => navigate(box.path)}
-                  className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition duration-300 cursor-pointer"
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    {box.icon}
-                    <h3 className="text-lg font-semibold text-gray-800">{box.title}</h3>
-                  </div>
-                  <p className="text-sm text-gray-600">{box.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+    <div className="p-4 bg-white flex flex-col">
+      {/* Top Navbar */}
+      <div className="flex items-center justify-between mb-4">
+        {/* Left - Greeting */}
+        <div>
+          <h1 className="text-xl font-bold text-gray-800 items-center">Hello, {name || 'Guest'}</h1>
+          <p className="text-sm text-red-600">What would you eat today?</p>
         </div>
 
-        {/* Footer */}
-        <div className="mt-10 text-center text-gray-700 font-semibold text-base">
-          Thanks for choosing <span className="text-red-500 font-bold">Craverz</span> ❤️
+        {/* Right - Icons + Profile */}
+        <div className="flex items-center gap-3">
+          <HelpCircle onClick={()=>{navigate('/contact')}} className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
+          <Settings onClick={()=>{toast.success("This feature is on the way — stay tuned!")}} className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
+          <div className="relative cursor-pointer">
+            <Bell onClick={()=>{toast.success("This feature is on the way — stay tuned!")}} className="w-5 h-5 text-gray-600 hover:text-gray-900" />
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          </div>
+          <img
+            src={profilepic}
+            alt="profile"
+            onClick={()=>{navigate('/myaccount/profile')}}
+            className="w-9 h-9 rounded-full border border-gray-200 cursor-pointer"
+          />
         </div>
       </div>
-    </div>
+
+      {/* Content Section */}
+      <div className="flex-1 grid grid-rows-3 gap-4">
+        {/* Banner */}
+        <div
+          className="flex items-center justify-around rounded-xl px-2 py-2 bg-cover bg-center shadow-md"
+          style={{ backgroundImage: `url(${bg})` }}
+        >
+          {/* Left Side - Text */}
+          <div className="max-w-sm">
+            <h1 className="text-2xl font-extrabold text-red-600 leading-snug">
+              Get up to 50% OFF on your First Order!
+            </h1>
+            <button onClick={()=>{navigate('/shop')}} className="mt-2 px-4 py-1.5 bg-red-500 text-white text-sm font-medium rounded-lg shadow hover:bg-red-600 transition cursor-pointer">
+              Order Now
+            </button>
+          </div>
+
+          {/* Right Side - Image */}
+          <div className="hidden sm:block">
+            <img
+              src={bike}
+              alt="Delivery Boy"
+              className="w-50 h-auto drop-shadow-lg"
+            />
+          </div>
+        </div>
+
+        {/* Popular Foods */}
+        <div className="bg-white rounded-xl p-0">
+          <h2 className="text-lg font-semibold text-red-600 mb-2">
+            Popular Foods
+          </h2>
+          <div onClick={()=>{navigate('/shop')}} className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {PopularFoods.map((food) => (
+              <div
+                key={food.id}
+                className="bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer border-4 border-red-100 p-1"
+              >
+                <img
+                  src={food.img}
+                  alt={food.title}
+                  className="w-25 h-25 object-cover rounded-full mx-auto mt-2 border-4 border-red-100 p-1"
+                />
+                <p className="text-center text-gray-700 text-sm font-medium py-1">
+                  {food.title}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Best Selling Foods */}
+        <div className="bg-white rounded-xl p-0">
+          <h2 className="text-lg font-semibold text-red-600 mb-2">
+            Best Selling Foods
+          </h2>
+          <div onClick={()=>{navigate('/shop')}} className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {BestSellingFood.map((food) => (
+              <div
+                key={food.id}
+                className="bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer border-4 border-red-100 p-1"
+              >
+                <img
+                  src={food.img}
+                  alt={food.title}
+                  className="w-25 h-25 object-cover rounded-full mx-auto mt-2 border-4 border-red-100 p-1"
+                />
+                <p className="text-center text-gray-700 text-sm font-medium py-1">
+                  {food.title}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-export default DashBoard;
+export default Dashboard;

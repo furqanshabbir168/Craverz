@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/cravez-logo.png";
 import { ShoppingCart, Menu, X } from "lucide-react";
 import { ShopContext } from "../Context/ShopContext";
@@ -7,7 +7,8 @@ import { User } from "lucide-react";
 
 function NavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { token } = useContext(ShopContext);
+  const { token, cart } = useContext(ShopContext);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -57,7 +58,10 @@ function NavBar() {
                 <Link to="/faqs" className="px-4 py-2 hover:bg-red-100">
                   FAQ's
                 </Link>
-                <Link to={token === "" ? "/account" : "/myaccount/dashboard"} className="px-4 py-2 hover:bg-red-100">
+                <Link
+                  to={token === "" ? "/account" : "/myaccount/dashboard"}
+                  className="px-4 py-2 hover:bg-red-100"
+                >
                   My Account
                 </Link>
               </div>
@@ -74,7 +78,19 @@ function NavBar() {
           {/* Right Actions */}
           <div className="flex items-center gap-4">
             {/* Cart Icon */}
-            <ShoppingCart className="w-6 h-6 text-gray-700 hover:text-red-500 cursor-pointer hidden md:block" />
+            <div className="relative cursor-pointer">
+              <ShoppingCart
+                onClick={() => {
+                  navigate("myaccount/cart");
+                }}
+                className="w-6 h-6 text-gray-700 hover:text-red-500 cursor-pointer hidden md:block"
+              />
+
+              {cart.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              )}
+            </div>
+
             {/* Login Button - Desktop */}
             {token === "" ? (
               <Link
@@ -84,10 +100,10 @@ function NavBar() {
                 Login
               </Link>
             ) : (
-              <Link to = '/myaccount/dashboard'>
-              <div className="w-10 h-10 rounded-full bg-red-100 border border-red-300 flex items-center justify-center transition-all duration-200 hover:bg-red-500 group cursor-pointer">
-                <User className="w-6 h-6 text-red-600 group-hover:text-white" />
-              </div>
+              <Link to="/myaccount/dashboard">
+                <div className="w-10 h-10 rounded-full bg-red-100 border border-red-300 flex items-center justify-center transition-all duration-200 hover:bg-red-500 group cursor-pointer">
+                  <User className="w-6 h-6 text-red-600 group-hover:text-white" />
+                </div>
               </Link>
             )}
             {/* Menu Icon - Mobile */}
