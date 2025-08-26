@@ -4,12 +4,21 @@ import { connectDB } from './config/dataBase.js';
 import userRouter from './routes/userRoutes.js';
 import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest/index.js"
+import adminRouter from './routes/adminRoutes.js';
+import foodRouter from './routes/foodRoutes.js';
+import orderRouter from './routes/orderRoutes.js';
+import { stripeWebhook } from './controller/orderController.js';
 
 const PORT = 4000;
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: [
+    "https://cravez.vercel.app",
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // Connect DB
@@ -22,6 +31,15 @@ app.get('/', (req, res) => {
 
 // User Routes
 app.use('/api/user', userRouter);
+app.use('/api/admin',adminRouter);
+app.use('/api/food',foodRouter)
+app.use('/api/order',orderRouter)
+app.post(
+  "/api/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
+
 // inngest routes
 app.use("/api/inngest", serve({ client: inngest, functions }));
 

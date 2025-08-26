@@ -1,31 +1,29 @@
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
-  User,
-  ListOrdered,
-  ShoppingCart,
+  ClipboardList,
   BookOpen,
-  HelpCircle,
   LogOut,
   Home,
   Menu,
   X,
+  PlusCircle,
+  ListOrdered,
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-function SideBar() {
+function AdminSideBar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
   const links = [
     { name: "Home", path: "/", icon: <Home size={20} /> },
-    { name: "Dashboard", path: "/myaccount/dashboard", icon: <LayoutDashboard size={20} /> },
-    { name: "My Profile", path: "/myaccount/profile", icon: <User size={20} /> },
-    { name: "My Orders", path: "/myaccount/orders", icon: <ListOrdered size={20} /> },
-    { name: "My Cart", path: "/myaccount/cart", icon: <ShoppingCart size={20} /> },
-    { name: "Reservation", path: "/account/reservation", icon: <BookOpen size={20} /> },
-    { name: "Help & Support", path: "/account/help", icon: <HelpCircle size={20} /> },
+    { name: "Dashboard", path: "/myadmin/dashboard", icon: <LayoutDashboard size={20} /> },
+    { name: "Add Food", path: "/myadmin/additems", icon: <PlusCircle size={20} /> },
+    { name: "Listed Food", path: "/myadmin/listitems", icon: <ListOrdered size={20} /> },
+    { name: "Orders", path: "/myadmin/orders", icon: <ClipboardList size={20} /> },
+    { name: "Reservations", path: "/myadmin/reservations", icon: <BookOpen size={20} /> },
   ];
 
   return (
@@ -33,7 +31,7 @@ function SideBar() {
       {/* Desktop Sidebar */}
       <div className="hidden md:flex w-64 h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 fixed left-0 top-0 flex-col z-50">
         <div className="text-2xl font-bold text-center py-6 border-b border-gray-700 text-white">
-          Cravez
+          Cravez Admin
         </div>
         <nav className="flex flex-col mt-4">
           {links.map((link) => (
@@ -48,10 +46,11 @@ function SideBar() {
               {link.name}
             </Link>
           ))}
+
           <button
             onClick={() => {
-              localStorage.removeItem("cravez_token");
-              window.location.href = "/account";
+              localStorage.removeItem("cravez_admin_token");
+              window.location.href = "/admin";
             }}
             className="flex items-center gap-3 px-7 py-3 text-sm font-medium text-gray-100 hover:bg-red-400 transition w-full text-left cursor-pointer"
           >
@@ -93,8 +92,11 @@ function SideBar() {
               transition={{ type: "tween", duration: 0.3 }}
             >
               <div className="flex justify-between items-center px-6 py-6 border-b border-gray-700">
-                <h2 className="text-xl font-bold">Cravez</h2>
-                <button onClick={() => setIsOpen(false)} className="p-2 rounded-full hover:bg-gray-700 transition cursor-pointer">
+                <h2 className="text-xl font-bold">Cravez Admin</h2>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="p-2 rounded-full hover:bg-gray-700 transition cursor-pointer"
+                >
                   <X size={22} />
                 </button>
               </div>
@@ -116,8 +118,8 @@ function SideBar() {
 
                 <button
                   onClick={() => {
-                    localStorage.removeItem("cravez_token");
-                    window.location.href = "/account";
+                    localStorage.removeItem("cravez_admin_token");
+                    window.location.href = "/admin";
                   }}
                   className="flex items-center gap-3 px-6 py-3 text-sm font-medium text-gray-100 hover:bg-red-400 transition w-full text-left cursor-pointer"
                 >
@@ -133,4 +135,4 @@ function SideBar() {
   );
 }
 
-export default SideBar;
+export default AdminSideBar;

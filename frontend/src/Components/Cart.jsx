@@ -5,9 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 function Cart() {
-  const { cart, removeFromCart, increaseQty, decreaseQty } = useContext(ShopContext);
+  const { cart, removeFromCart, increaseQty, decreaseQty } =
+    useContext(ShopContext);
   const navigate = useNavigate();
-
 
   // If cart is empty
   if (cart.length === 0) {
@@ -36,7 +36,7 @@ function Cart() {
       <div className="flex flex-row items-center gap-2 bg-red-500 text-white p-2 rounded-lg mb-4">
         <Check />
         <p className="text-sm">
-          Delivery charges and taxes will be calculated at checkout.
+          Fast delivery straight to your door — checkout when you’re ready.
         </p>
       </div>
 
@@ -92,7 +92,12 @@ function Cart() {
                     onClick={() => removeFromCart(food.id)}
                     className="p-1 hover:text-red-500 cursor-pointer"
                   >
-                    <Trash onClick={()=>{toast.success("Food removed from cart")}} className="cursor-pointer"/>
+                    <Trash
+                      onClick={() => {
+                        toast.success("Food removed from cart");
+                      }}
+                      className="cursor-pointer"
+                    />
                   </button>
                 </div>
               </div>
@@ -126,7 +131,12 @@ function Cart() {
               onClick={() => removeFromCart(food.id)}
               className="hidden md:block p-1 hover:text-red-500 cursor-pointer"
             >
-              <Trash onClick={()=>{toast.success("Food removed from cart")}} className="cursor-pointer"/>
+              <Trash
+                onClick={() => {
+                  toast.success("Food removed from cart");
+                }}
+                className="cursor-pointer"
+              />
             </button>
           </div>
         ))}
@@ -150,10 +160,47 @@ function Cart() {
           </button>
         </div>
         <div className="w-full md:w-auto">
-          <button onClick={()=>{navigate('/shop')}} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 w-full md:w-auto cursor-pointer">
+          <button
+            onClick={() => {
+              navigate("/shop");
+            }}
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 w-full md:w-auto cursor-pointer"
+          >
             Continue Shopping
           </button>
         </div>
+      </div>
+      {/* Checkout Section */}
+      <div className="mt-8 w-full md:w-1/2 md:self-end">
+        <h2 className="text-xl font-semibold mb-4 text-gray-700">
+          Cart Totals
+        </h2>
+        <div className="border rounded-lg p-4 shadow-sm space-y-3">
+          <div className="flex justify-between text-gray-700">
+            <p>Subtotal</p>
+            <p className="font-medium">
+              ${cart.reduce((acc, food) => acc + food.price * food.quantity, 0)}
+            </p>
+          </div>
+          <div className="flex justify-between text-gray-700">
+            <p>Delivery Charges</p>
+            <p className="font-medium">$5</p>
+          </div>
+          <div className="flex justify-between text-lg font-semibold border-t pt-3 text-gray-900">
+            <p>Order Total</p>
+            <p>
+              $
+              {cart.reduce((acc, food) => acc + food.price * food.quantity, 0) +
+                5}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => navigate("/myaccount/checkout")}
+          className="mt-6 w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition cursor-pointer"
+        >
+          Proceed To Checkout
+        </button>
       </div>
     </div>
   );

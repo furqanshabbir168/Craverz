@@ -17,6 +17,7 @@ function TopBanner() {
     account: "My Account",
     contact: "Contact Us",
     blog: "Blog",
+    admin : "Admin Account"
   };
 
   const currentPage = pageNames[path] || "Page";

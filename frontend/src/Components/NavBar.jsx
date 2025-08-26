@@ -7,7 +7,7 @@ import { User } from "lucide-react";
 
 function NavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { token, cart } = useContext(ShopContext);
+  const { token, cart , adminToken} = useContext(ShopContext);
   const navigate = useNavigate();
 
   return (
@@ -22,7 +22,7 @@ function NavBar() {
               alt="Cravez Logo"
               className="w-10 h-10 object-contain"
             />
-            <h1 className="text-3xl font-bold text-red-500">Cravez</h1>
+            <h1 className="text-4xl text-red-500 font-bold">CraveZ</h1>
           </Link>
 
           {/* Desktop Links */}
@@ -72,6 +72,9 @@ function NavBar() {
             </Link>
             <Link to="/blog">
               <li className="hover:text-red-500">Blog</li>
+            </Link>
+            <Link to={adminToken === "" ? "/admin" : "/myadmin/dashboard"}>
+              <li className="hover:text-red-500">Admin</li>
             </Link>
           </ul>
 
@@ -165,6 +168,9 @@ function NavBar() {
             </Link>
             <Link to="/blog" onClick={() => setIsMobileMenuOpen(false)}>
               Blog
+            </Link>
+            <Link to='/admin' onClick={() => setIsMobileMenuOpen(false)}>
+              Admin
             </Link>
             <Link
               to="/login"

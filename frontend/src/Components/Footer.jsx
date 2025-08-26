@@ -15,7 +15,7 @@ function Footer() {
         >
           <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
             <img src={logo} alt="Cravez Logo" className="w-10 h-10 object-contain" />
-            <h1 className="text-4xl text-red-500 font-bold">Cravez</h1>
+            <h1 className="text-4xl text-red-500 font-bold">CraveZ</h1>
           </div>
           <p className="text-sm text-gray-200">
             Craverz — Your Daily Dose of Delicious! From juicy burgers and cheesy pizzas to crispy fries and sizzling wraps, we’ve got something to satisfy every craving. Order online or visit us — where cravings meet comfort, and every meal is made with love.

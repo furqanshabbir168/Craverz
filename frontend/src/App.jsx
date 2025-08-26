@@ -20,33 +20,44 @@ import FAQ from "./Pages/FAQ";
 import Contact from "./Pages/Contact";
 import BlogPage from "./Pages/BlogPage";
 import MyAccount from "./Pages/MyAccount";
+import AdminPage from "./Pages/AdminPage";
 
 // Account Layout & Protected Pages
 import AccountLayout from "./Components/AccountLayout";
 import Dashboard from "./Components/DashBoard";
 import Profile from "./Components/Profile";
-import NotFound from "./Components/NotFound";
 import Cart from "./Components/Cart";
+import NotFound from "./Components/NotFound";
 
-// import more account pages here as needed
+// Admin Layout & Protected Pages
+import AdminLayout from "./Components/AdminLayout";
+import AdminDashboard from "./Components/AdminDashboard";
+import AddFood from "./Components/AddFood";
+import ListedFood from "./Components/ListedFood";
+import Checkout from "./Components/Checkout";
+import Orders from "./Components/Orders";
+// import ManageUsers from "./Components/ManageUsers";
+// add more admin components if needed
 
 function App() {
   const location = useLocation();
-  const { token, loadingToken } = useContext(ShopContext);
+  const { token, loadingToken, adminToken, loadingAdminToken } =
+    useContext(ShopContext);
   const [loading, setLoading] = useState(false);
 
-  // Check if current route is /myaccount or its subroutes
+  // Detect current section
   const isAccountRoute = location.pathname.startsWith("/myaccount");
+  const isAdminRoute = location.pathname.startsWith("/myadmin");
 
-  // Show loader on route change
+  // Loader on route change
   useEffect(() => {
-    if (loadingToken) return;
+    if (loadingToken || loadingAdminToken) return;
     setLoading(true);
-    const timer = setTimeout(() => setLoading(false), 3000); // shorter loader
+    const timer = setTimeout(() => setLoading(false), 1500); 
     return () => clearTimeout(timer);
-  }, [location, loadingToken]);
+  }, [location, loadingToken, loadingAdminToken]);
 
-  if (loadingToken) return null;
+  if (loadingToken || loadingAdminToken) return null;
 
   return (
     <div>
@@ -54,30 +65,17 @@ function App() {
       <Toaster
         position="top-right"
         toastOptions={{
-          style: {
-            background: "#1d3557",
-            color: "#fff",
-          },
-          success: {
-            iconTheme: {
-              primary: "#4ade80",
-              secondary: "#fff",
-            },
-          },
-          error: {
-            iconTheme: {
-              primary: "#f87171",
-              secondary: "#fff",
-            },
-          },
+          style: { background: "#1d3557", color: "#fff" },
+          success: { iconTheme: { primary: "#4ade80", secondary: "#fff" } },
+          error: { iconTheme: { primary: "#f87171", secondary: "#fff" } },
         }}
       />
 
       {/* Loader */}
       {loading && <Loader />}
 
-      {/* NavBar and Footer only on public routes */}
-      {!isAccountRoute && <NavBar />}
+      {/* NavBar only on public routes */}
+      {!isAccountRoute && !isAdminRoute && <NavBar />}
       <ScrollToTop />
 
       <Routes>
@@ -93,24 +91,38 @@ function App() {
         <Route path="/faqs" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/blog" element={<BlogPage />} />
-        <Route path="*" element={<NotFound/>}/>
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="*" element={<NotFound />} />
 
-        {/* Auth Page (login/signup) */}
+        {/* User Auth Page (login/signup) */}
         {!token && <Route path="/account" element={<MyAccount />} />}
 
-        {/* Protected Account Routes */}
+        {/* Protected User Routes */}
         <Route
           path="/myaccount"
           element={token ? <AccountLayout /> : <Navigate to="/account" />}
         >
-          <Route path="/myaccount/dashboard" element={<Dashboard/>}/>
-          <Route path="/myaccount/profile" element={<Profile/>}/>
-          <Route path="/myaccount/cart" element={<Cart/>}/>
+          <Route path="/myaccount/dashboard" element={<Dashboard />} />
+          <Route path="/myaccount/profile" element={<Profile />} />
+          <Route path="/myaccount/cart" element={<Cart />} />
+          <Route path="/myaccount/checkout" element={<Checkout/>}/>
+          <Route path="/myaccount/orders" element={<Orders/>}/>
+        </Route>
+
+        {/* Protected Admin Routes */}
+        <Route
+          path="/myadmin"
+          element={adminToken ? <AdminLayout /> : <Navigate to="/admin" />}
+        >
+          <Route path="/myadmin/dashboard" element={<AdminDashboard />} />
+          <Route path="/myadmin/additems" element={<AddFood/>}/>
+          <Route path="/myadmin/listitems" element={<ListedFood/>}/>
+          {/* add more admin subroutes here */}
         </Route>
       </Routes>
 
-      {/* Footer on public routes only */}
-      {!isAccountRoute && <Footer />}
+      {/* Footer only on public routes */}
+      {!isAccountRoute && !isAdminRoute && <Footer />}
     </div>
   );
 }
