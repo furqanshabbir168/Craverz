@@ -169,15 +169,17 @@ async function placeStripeOrder(req, res) {
     const newOrder = new orderModel({
       userId: req.user.id,
       items,
-      amount: totalAmount, // store total including delivery
+      amount: totalAmount,
       address,
       status: "Food Processing",
       payment: {
         method: "Stripe",
         status: "Pending",
         sessionId: session.id,
-      },
-    });
+        transactionId: session.payment_intent, // ✅ store PI here
+  },
+});
+
 
     await newOrder.save();
 
@@ -197,38 +199,61 @@ async function placeStripeOrder(req, res) {
   }
 }
 // verify payment via stripe
-async function stripeWebhook(req, res){
+async function stripeWebhook(req, res) {
   const sig = req.headers["stripe-signature"];
 
   try {
     const event = stripe.webhooks.constructEvent(
-      req.body, // using raw body here
+      req.body, // raw body
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
 
-    // Handle checkout session completed
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object;
+    switch (event.type) {
+      case "checkout.session.completed": {
+        const session = event.data.object;
 
-      const order = await orderModel.findOne({
-        "payment.sessionId": session.id,
-      });
+        // ✅ update order by sessionId
+        const order = await orderModel.findOne({
+          "payment.sessionId": session.id,
+        });
 
-      if (order) {
-        order.payment.status = "Paid";
-        order.status = "Confirmed";
-        await order.save();
+        if (order) {
+          order.payment.status = "Paid";
+          order.payment.transactionId = session.payment_intent; // save PI
+          order.status = "Confirmed";
+          await order.save();
+        }
+        break;
       }
-    }
 
-    // Optional: handle expired sessions
-    if (event.type === "checkout.session.expired") {
-      const session = event.data.object;
-      await orderModel.findOneAndUpdate(
-        { "payment.sessionId": session.id },
-        { status: "Cancelled" }
-      );
+      case "payment_intent.succeeded": {
+        const intent = event.data.object;
+
+        // ✅ update order by paymentIntentId
+        const order = await orderModel.findOne({
+          "payment.transactionId": intent.id,
+        });
+
+        if (order) {
+          order.payment.status = "Paid";
+          order.status = "Confirmed";
+          await order.save();
+        }
+        break;
+      }
+
+      case "checkout.session.expired": {
+        const session = event.data.object;
+        await orderModel.findOneAndUpdate(
+          { "payment.sessionId": session.id },
+          { status: "Cancelled" }
+        );
+        break;
+      }
+
+      default:
+        console.log(`Unhandled event type ${event.type}`);
     }
 
     res.json({ received: true });
@@ -236,7 +261,7 @@ async function stripeWebhook(req, res){
     console.error("Webhook error:", err.message);
     res.status(400).send(`Webhook Error: ${err.message}`);
   }
-};
+}
 // get orders
 async function getOrders(req,res) {
     try {
