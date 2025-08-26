@@ -19,6 +19,13 @@ app.use(cors({
   ],
   credentials: true
 }));
+
+app.post(
+  "/api/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
+
 app.use(express.json());
 
 // Connect DB
@@ -34,11 +41,6 @@ app.use('/api/user', userRouter);
 app.use('/api/admin',adminRouter);
 app.use('/api/food',foodRouter)
 app.use('/api/order',orderRouter)
-app.post(
-  "/api/webhook",
-  express.raw({ type: "application/json" }),
-  stripeWebhook
-);
 
 // inngest routes
 app.use("/api/inngest", serve({ client: inngest, functions }));
