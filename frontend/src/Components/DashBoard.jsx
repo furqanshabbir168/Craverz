@@ -70,10 +70,10 @@ function Dashboard() {
       </div>
 
       {/* Content Section */}
-      <div className="flex-1 grid grid-rows-3 gap-4">
+      <div className="flex-1 flex flex-col gap-3">
         {/* Banner */}
         <div
-          className="flex items-center justify-around rounded-xl px-2 py-2 bg-cover bg-center shadow-md"
+          className="flex h-50 md:h-52 items-center justify-around rounded-xl px-5 py-2 bg-cover bg-center shadow-md"
           style={{ backgroundImage: `url(${bg})` }}
         >
           {/* Left Side - Text */}

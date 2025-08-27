@@ -7,7 +7,7 @@ function Footer() {
     <footer className="bg-gradient-to-b from-black via-[#1a0000] to-black text-white px-6 py-10">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-12">
         {/* Brand & About */}
-        <motion.div className="flex-1 text-center md:text-left"
+        <motion.div className="flex-1 text-start md:text-left"
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
@@ -29,7 +29,7 @@ function Footer() {
         </motion.div>
 
         {/* Company Links */}
-        <motion.div className="flex-1 text-center md:text-left"
+        <motion.div className="flex-1 text-start md:text-left"
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 1, ease: "easeOut" }}
@@ -51,18 +51,18 @@ function Footer() {
         </motion.div>
 
         {/* Contact Info */}
-        <motion.div className="flex-1 text-center md:text-left"
+        <motion.div className="flex-1 text-centre md:text-left"
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 1.5, ease: "easeOut" }}
         viewport={{ once: true, amount: 0.2 }}
         >
-          <h2 className="text-2xl font-bold text-red-500 mb-4">Get in Touch</h2>
-          <div className="flex items-center gap-2 mb-2 justify-center md:justify-start hover:text-red-400 transition cursor-pointer">
+          <h2 className="text-2xl font-bold text-red-500 mb-4 text-center md:text-start">Get in Touch</h2>
+          <div className="flex items-center gap-2 mb-2  md:justify-start hover:text-red-400 transition cursor-pointer text-start">
             <Phone className="w-5 h-5" />
             <span>+92 373 42 24 244</span>
           </div>
-          <div className="flex items-center gap-2 hover:text-red-400 transition cursor-pointer justify-center md:justify-start">
+          <div className="flex items-center gap-2 hover:text-red-400 transition cursor-pointer md:justify-start">
             <Mail className="w-5 h-5" />
             <span>cravezsupport@gmail.com</span>
           </div>
