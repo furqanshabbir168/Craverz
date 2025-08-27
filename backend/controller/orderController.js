@@ -194,7 +194,6 @@ async function placeStripeOrder(req, res) {
   }
 }
 // verify payment via stripe
-// verify payment via stripe
 async function stripeWebhook(req, res) {
   const sig = req.headers["stripe-signature"];
 
@@ -206,7 +205,6 @@ async function stripeWebhook(req, res) {
     );
 
     switch (event.type) {
-      // ✅ Successful payment
       case "checkout.session.completed": {
         const session = event.data.object;
 
@@ -219,21 +217,26 @@ async function stripeWebhook(req, res) {
           order.payment.transactionId = session.payment_intent;
           await order.save();
 
-          // Success Email
+          // Send Stripe payment confirmation email
           await sendEmail(order.address.email, "Your Cravez Order Confirmation", `
   <div style="font-family: Arial, sans-serif; max-width: 650px; margin: auto; padding: 24px; border: 1px solid #eee; border-radius: 8px; background-color: #ffffff;">
     <h2 style="text-align: center; color: #e63946;">🍔 Payment Confirmed - <span style="color: #e63946; font-weight: bold;">CRAVEZ</span></h2>
+
     <p style="font-size: 16px; color: #333;">Hi <strong>${order.address.firstName} ${order.address.lastName}</strong>,</p>
+
     <p style="font-size: 15px; color: #333; line-height: 1.6;">
       We’re excited to let you know that your payment has been <strong style="color: green;">successfully processed</strong> 
       and your order is now being prepared by our team!
     </p>
+
     <p style="font-size: 15px; color: #333;">
       <strong>Order Number:</strong> ${order._id} <br/>
       <strong>Payment Method:</strong> Stripe (Paid) <br/>
       <strong>Status:</strong> ${order.status}
     </p>
+
     <hr style="margin: 24px 0;" />
+
     <h3 style="color: #e63946;">📋 Order Details</h3>
     <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
       <thead>
@@ -253,21 +256,27 @@ async function stripeWebhook(req, res) {
         `).join("")}
       </tbody>
     </table>
+
     <p style="font-size: 16px; font-weight: bold; text-align: right; margin-top: 16px;">
       Total: $ ${order.items.reduce((total, item) => total + (item.price * item.quantity), 0) + 5} 
       <br/><span style="font-size: 13px; color: #666;">(including $5 delivery fee)</span>
     </p>
+
     <hr style="margin: 24px 0;" />
+
     <h3 style="color: #e63946;">📦 Delivery Address</h3>
     <p style="font-size: 15px; color: #333; line-height: 1.6; margin: 0;">
       ${order.address.street}, ${order.address.city}, ${order.address.state}, ${order.address.zip}, ${order.address.country}<br/>
       <strong>Phone:</strong> ${order.address.phone}
     </p>
+
     <hr style="margin: 24px 0;" />
+
     <p style="font-size: 14px; color: #333; line-height: 1.6;">
       If you have any questions or wish to make changes to your order, please contact our support team at  
       <a href="mailto:support@cravez.com" style="color: #e63946;">support@cravez.com</a> or call <strong>+92 373 42 24 244</strong>.
     </p>
+
     <p style="font-size: 14px; color: #999; margin-top: 32px; text-align: center;">
       Thank you for choosing <strong style="color: #e63946;">CRAVEZ</strong>. We look forward to serving you! <br/>
       — The CRAVEZ Team
@@ -275,64 +284,33 @@ async function stripeWebhook(req, res) {
   </div>
           `);
         }
+        
         break;
       }
 
-      // ❌ Payment Failed
-      case "payment_intent.payment_failed": {
+      case "payment_intent.succeeded": {
         const intent = event.data.object;
         const order = await orderModel.findOne({
           "payment.transactionId": intent.id,
         });
 
         if (order) {
-          order.payment.status = "Failed";
-          order.status = "Cancelled";
+          order.payment.status = "Paid";
+          order.status = "Confirmed";
           await order.save();
-
-          await sendEmail(order.address.email, "Payment Failed - CRAVEZ", `
-  <div style="font-family: Arial, sans-serif; max-width: 650px; margin: auto; padding: 24px; border: 1px solid #eee; border-radius: 8px; background-color: #fff;">
-    <h2 style="text-align: center; color: #e63946;">❌ Payment Failed</h2>
-    <p style="font-size: 16px; color: #333;">Hi <strong>${order.address.firstName} ${order.address.lastName}</strong>,</p>
-    <p style="font-size: 15px; color: #333; line-height: 1.6;">
-      Unfortunately, your payment for <strong>Order #${order._id}</strong> was not successful.  
-      Please try again with another payment method.
-    </p>
-    <p style="font-size: 14px; color: #333;">Need help? Contact <a href="mailto:support@cravez.com" style="color: #e63946;">support@cravez.com</a></p>
-    <p style="font-size: 14px; color: #999; margin-top: 32px; text-align: center;">
-      — The CRAVEZ Team
-    </p>
-  </div>
-          `);
         }
         break;
       }
 
-      // ⏳ Checkout Session Expired (auto-cancel)
       case "checkout.session.expired": {
         const session = event.data.object;
-        const order = await orderModel.findOneAndUpdate(
+        await orderModel.findOneAndUpdate(
           { "payment.sessionId": session.id },
-          { status: "Cancelled", "payment.status": "Failed" },
-          { new: true }
+          { 
+            status: "Cancelled",
+            "payment.status": "Failed" 
+          }
         );
-
-        if (order) {
-          await sendEmail(order.address.email, "Order Cancelled - CRAVEZ", `
-  <div style="font-family: Arial, sans-serif; max-width: 650px; margin: auto; padding: 24px; border: 1px solid #eee; border-radius: 8px; background-color: #fff;">
-    <h2 style="text-align: center; color: #e63946;">⚠️ Order Cancelled</h2>
-    <p style="font-size: 16px; color: #333;">Hi <strong>${order.address.firstName} ${order.address.lastName}</strong>,</p>
-    <p style="font-size: 15px; color: #333; line-height: 1.6;">
-      Your order <strong>#${order._id}</strong> was automatically cancelled because the payment session expired.  
-      No charges were made.
-    </p>
-    <p style="font-size: 14px; color: #333;">You can place a new order anytime on <a href="${process.env.FRONTEND_URL}" style="color: #e63946;">CRAVEZ</a>.</p>
-    <p style="font-size: 14px; color: #999; margin-top: 32px; text-align: center;">
-      — The CRAVEZ Team
-    </p>
-  </div>
-          `);
-        }
         break;
       }
 
@@ -345,7 +323,6 @@ async function stripeWebhook(req, res) {
     res.status(400).send(`Webhook Error: ${err.message}`);
   }
 }
-
 // get orders
 async function getOrders(req,res) {
     try {
