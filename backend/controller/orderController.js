@@ -122,10 +122,9 @@ async function placeStripeOrder(req, res) {
       });
     }
 
-    const deliveryFee = 5; // Add delivery charges
+    const deliveryFee = 5;
     const totalAmount = amount + deliveryFee;
 
-    // Prepare line items for Stripe
     const line_items = [
       ...items.map((item) => ({
         price_data: {
@@ -146,13 +145,12 @@ async function placeStripeOrder(req, res) {
             name: "Delivery Charges",
             description: "Delivery Fee",
           },
-          unit_amount: deliveryFee * 100, // delivery fee in cents
+          unit_amount: deliveryFee * 100,
         },
         quantity: 1,
       },
     ];
 
-    // Create Stripe Checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items,
@@ -165,7 +163,6 @@ async function placeStripeOrder(req, res) {
       },
     });
 
-    // Save order in DB
     const newOrder = new orderModel({
       userId: req.user.id,
       items,
@@ -175,11 +172,10 @@ async function placeStripeOrder(req, res) {
       payment: {
         method: "Stripe",
         status: "Pending",
+        transactionId: null,
         sessionId: session.id,
-        transactionId: session.payment_intent, // ✅ store PI here
-  },
-});
-
+      },
+    });
 
     await newOrder.save();
 
@@ -191,7 +187,6 @@ async function placeStripeOrder(req, res) {
       order: newOrder,
     });
   } catch (error) {
-    console.error("Error placing Stripe order:", error);
     res.status(500).json({
       success: false,
       message: "Server error while placing Stripe order",
@@ -204,7 +199,7 @@ async function stripeWebhook(req, res) {
 
   try {
     const event = stripe.webhooks.constructEvent(
-      req.body, // raw body
+      req.body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
@@ -213,24 +208,31 @@ async function stripeWebhook(req, res) {
       case "checkout.session.completed": {
         const session = event.data.object;
 
-        // ✅ update order by sessionId
         const order = await orderModel.findOne({
           "payment.sessionId": session.id,
         });
 
         if (order) {
           order.payment.status = "Paid";
-          order.payment.transactionId = session.payment_intent; // save PI
+          order.payment.transactionId = session.payment_intent;
           order.status = "Confirmed";
           await order.save();
+
+          await sendEmail(order.address.email, "Payment Confirmed - CRAVEZ", `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px;">
+              <h2 style="color: #e63946;">🎉 Payment Confirmed!</h2>
+              <p>Your payment for order #${order._id} has been successfully processed.</p>
+              <p><strong>Amount:</strong> $${order.amount}</p>
+              <p><strong>Status:</strong> ${order.status}</p>
+              <p>Your order is now being prepared. Thank you for choosing CRAVEZ!</p>
+            </div>
+          `);
         }
         break;
       }
 
       case "payment_intent.succeeded": {
         const intent = event.data.object;
-
-        // ✅ update order by paymentIntentId
         const order = await orderModel.findOne({
           "payment.transactionId": intent.id,
         });
@@ -247,18 +249,20 @@ async function stripeWebhook(req, res) {
         const session = event.data.object;
         await orderModel.findOneAndUpdate(
           { "payment.sessionId": session.id },
-          { status: "Cancelled" }
+          { 
+            status: "Cancelled",
+            "payment.status": "Failed" 
+          }
         );
         break;
       }
 
       default:
-        console.log(`Unhandled event type ${event.type}`);
+        break;
     }
 
     res.json({ received: true });
   } catch (err) {
-    console.error("Webhook error:", err.message);
     res.status(400).send(`Webhook Error: ${err.message}`);
   }
 }

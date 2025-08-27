@@ -27,6 +27,7 @@ const orderSchema = new mongoose.Schema(
         "Out for Delivery",
         "Delivered",
         "Cancelled",
+        "Confirmed",
       ],
       default: "Food Processing",
     },
@@ -42,7 +43,11 @@ const orderSchema = new mongoose.Schema(
         default: "Pending",
       },
       transactionId: {
-        type: String, // only for Stripe
+        type: String,
+        default: null,
+      },
+      sessionId: {
+        type: String,
         default: null,
       },
     },
@@ -50,7 +55,6 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const orderModel =
-  mongoose.models.Order || mongoose.model("Order", orderSchema);
+const orderModel = mongoose.models.Order || mongoose.model("Order", orderSchema);
 
 export default orderModel;
