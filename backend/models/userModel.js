@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     state: { type: String, default: "" },
     country: { type: String, default: "" },
     postalCode: { type: String, default: "" },
-    gender: { type: String, enum: ["Male", "Female", "Other"], default: "" },
+    gender: { type: String, enum: ["Male", "Female", "Other"] },
     dob: { type: Date },
     language: { type: [String], default: [] }, // multiple languages
     occupation: { type: String, default: "" },
