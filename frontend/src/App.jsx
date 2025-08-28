@@ -27,6 +27,9 @@ import AccountLayout from "./Components/AccountLayout";
 import Dashboard from "./Components/DashBoard";
 import Profile from "./Components/Profile";
 import Cart from "./Components/Cart";
+import Checkout from "./Components/Checkout";
+import Orders from "./Components/Orders";
+import MyReservation from "./Components/MyReservations";
 import NotFound from "./Components/NotFound";
 
 // Admin Layout & Protected Pages
@@ -34,8 +37,8 @@ import AdminLayout from "./Components/AdminLayout";
 import AdminDashboard from "./Components/AdminDashboard";
 import AddFood from "./Components/AddFood";
 import ListedFood from "./Components/ListedFood";
-import Checkout from "./Components/Checkout";
-import Orders from "./Components/Orders";
+import CravezChatBot from "./Components/ChatBot";
+
 // import ManageUsers from "./Components/ManageUsers";
 // add more admin components if needed
 
@@ -107,6 +110,7 @@ function App() {
           <Route path="/myaccount/cart" element={<Cart />} />
           <Route path="/myaccount/checkout" element={<Checkout/>}/>
           <Route path="/myaccount/orders" element={<Orders/>}/>
+          <Route path="/myaccount/reservations" element={<MyReservation/>}/>
         </Route>
 
         {/* Protected Admin Routes */}
@@ -123,6 +127,7 @@ function App() {
 
       {/* Footer only on public routes */}
       {!isAccountRoute && !isAdminRoute && <Footer />}
+      <CravezChatBot/>
     </div>
   );
 }

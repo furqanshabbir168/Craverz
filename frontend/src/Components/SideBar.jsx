@@ -24,7 +24,7 @@ function SideBar() {
     { name: "My Profile", path: "/myaccount/profile", icon: <User size={20} /> },
     { name: "My Orders", path: "/myaccount/orders", icon: <ListOrdered size={20} /> },
     { name: "My Cart", path: "/myaccount/cart", icon: <ShoppingCart size={20} /> },
-    { name: "Reservation", path: "/account/reservation", icon: <BookOpen size={20} /> },
+    { name: "Reservation", path: "/myaccount/reservations", icon: <BookOpen size={20} /> },
     { name: "Help & Support", path: "/account/help", icon: <HelpCircle size={20} /> },
   ];
 

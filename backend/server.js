@@ -8,11 +8,14 @@ import adminRouter from './routes/adminRoutes.js';
 import foodRouter from './routes/foodRoutes.js';
 import orderRouter from './routes/orderRoutes.js';
 import { stripeWebhook } from './controller/orderController.js';
+import reservationRouter from './routes/reservationRoutes.js';
+import faqRouter from './routes/faqRoutes.js';
 
 const PORT = 4000;
 const app = express();
 
 // Middleware
+// app.use(cors());
 app.use(cors({
     origin: [
     "https://cravez.vercel.app",
@@ -41,6 +44,8 @@ app.use('/api/user', userRouter);
 app.use('/api/admin',adminRouter);
 app.use('/api/food',foodRouter)
 app.use('/api/order',orderRouter)
+app.use('/api/reservation',reservationRouter)
+app.use('/api/faq',faqRouter)
 
 // inngest routes
 app.use("/api/inngest", serve({ client: inngest, functions }));

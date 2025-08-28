@@ -63,9 +63,7 @@ function Orders() {
       <div className="flex flex-row items-center gap-2 bg-red-500 text-white p-2 rounded-lg mb-4">
         <Check />
         <p className="text-sm">
-          Thank you for your order! Please check your email for the details of your latest order. If your delivery takes longer than expected, contact our support team at{" "}
-          <span className="underline font-semibold">support@cravez.com</span> or call{" "}
-          <span className="font-semibold">+1 234 567 890</span>.
+          Thank you for your order! Please check your email for the details of your latest order. If your delivery takes longer than expected, please feel free to reach us directly through the contact information provided on our website.
         </p>
       </div>
 
