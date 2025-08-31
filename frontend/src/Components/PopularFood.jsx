@@ -31,11 +31,11 @@ function PopularFood() {
       </motion.h2>
 
       {/* Cards */}
-      <div className="flex flex-wrap justify-center gap-6 w-full">
-        {loadingFood ? (
-          <p className="text-gray-600">Loading popular foods...</p>
-        ) : popularFoods.length > 0 ? (
-          popularFoods.map((dish, index) => (
+      {loadingFood ? (
+        <p className="text-gray-600">Loading popular foods...</p>
+      ) : popularFoods.length > 0 ? (
+        <div className="grid grid-cols-2 gap-4 sm:flex sm:flex-wrap sm:justify-center sm:gap-6 w-full">
+          {popularFoods.map((dish, index) => (
             <motion.div
               key={dish._id}
               initial={{ opacity: 0, y: 30 }}
@@ -51,21 +51,23 @@ function PopularFood() {
               <img
                 src={dish.image}
                 alt={dish.name}
-                className="w-36 h-36 sm:w-40 sm:h-40 object-cover rounded-full border-4 border-red-100 shadow-sm"
+                className="w-28 h-28 sm:w-40 sm:h-40 object-cover rounded-full border-4 border-red-100 shadow-sm"
               />
-              <h3 className="mt-4 text-lg font-semibold text-gray-800">
+              <h3 className="mt-4 text-sm sm:text-lg font-semibold text-gray-800">
                 {dish.name}
               </h3>
-              <p className="text-sm text-gray-600 mt-1">{dish.description}</p>
-              <p className="text-red-500 font-bold text-base mt-2">
+              <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">
+                {dish.description}
+              </p>
+              <p className="text-red-500 font-bold text-sm sm:text-base mt-2">
                 ${dish.price}
               </p>
             </motion.div>
-          ))
-        ) : (
-          <p className="text-gray-500">No popular food found.</p>
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-gray-500">No popular food found.</p>
+      )}
 
       {/* View All Button */}
       <button

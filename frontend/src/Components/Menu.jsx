@@ -96,7 +96,7 @@ function MenuSection() {
         </div>
 
         {/* Products */}
-        <div className="flex flex-wrap justify-center gap-6 w-full px-2 mt-8">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-6 w-full px-2 mt-8">
           {searchedFood
             .filter((item) => item.category === category)
             .map((product, index) => {
@@ -104,7 +104,7 @@ function MenuSection() {
               return (
                 <motion.div
                   key={product._id}
-                  className="bg-white shadow-md rounded-xl p-4 flex flex-col items-center text-center w-[270px] sm:w-60"
+                  className="bg-white shadow-md rounded-xl p-4 flex flex-col items-center text-center w-full sm:w-60 max-w-[270px]"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{
@@ -117,7 +117,7 @@ function MenuSection() {
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-40 h-40 object-cover rounded-full border-4 border-red-100 shadow-sm"
+                    className="w-30 h-30 object-cover rounded-full border-4 border-red-100 shadow-sm"
                   />
                   <h3 className="mt-4 text-lg font-semibold text-gray-800">
                     {product.name}

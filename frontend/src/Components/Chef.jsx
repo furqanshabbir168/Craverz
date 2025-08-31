@@ -1,6 +1,6 @@
 import { ChefHat } from "lucide-react";
 import Chefs from "../assets/Chefs";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 function Chef() {
@@ -22,11 +22,11 @@ function Chef() {
         transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
         viewport={{ once: true, amount: 0.2 }}
       >
-        Meet Our Expert Chef's
+        Meet Our Expert Chef&apos;s
       </motion.h2>
 
       {/* Chef Cards */}
-      <div className="flex flex-wrap justify-center gap-6 w-full px-4 sm:px-10">
+      <div className="grid grid-cols-2 gap-4 sm:flex sm:flex-wrap sm:justify-center sm:gap-6 w-full px-2 sm:px-10">
         {Chefs.map((chef, index) => (
           <motion.div
             key={chef.id}
@@ -34,26 +34,32 @@ function Chef() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{
               duration: 0.6,
-              delay: 0.5 + index * 0.5,
+              delay: 0.5 + index * 0.3,
               ease: "easeOut",
             }}
             viewport={{ once: true, amount: 0.2 }}
-            className="bg-white shadow-md rounded-xl p-4 w-[270px] sm:w-60 flex flex-col items-center text-center"
+            className="bg-white shadow-md rounded-xl p-4 w-full sm:w-60 max-w-[270px] flex flex-col items-center text-center"
           >
             <img
               src={chef.image}
               alt={chef.name}
               className="w-full h-[200px] object-cover border-4 border-red-100 shadow-sm rounded-tl-4xl rounded-tr-4xl rounded-br-4xl"
             />
-            <h3 className="mt-4 text-lg font-semibold text-gray-800">{chef.name}</h3>
-            <p className="text-red-500 font-bold text-base mt-2">{chef.position}</p>
+            <h3 className="mt-4 text-sm sm:text-lg font-semibold text-gray-800">
+              {chef.name}
+            </h3>
+            <p className="text-red-500 font-bold text-sm sm:text-base mt-2">
+              {chef.position}
+            </p>
           </motion.div>
         ))}
       </div>
 
       {/* Button */}
       <button
-        onClick={() => { navigate('/gallery'); }}
+        onClick={() => {
+          navigate("/gallery");
+        }}
         className="mt-8 px-6 py-3 bg-red-500 text-white font-medium rounded-full hover:bg-red-600 transition cursor-pointer"
       >
         EXPLORE THEIR DISHES
