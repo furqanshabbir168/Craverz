@@ -1,9 +1,11 @@
 import { useContext, useState } from "react";
 import { ShopContext } from "../Context/ShopContext";
 import { Utensils, Search, Trash2 } from "lucide-react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function ListedFood() {
-  const { food } = useContext(ShopContext);
+  const { food, url, fetchFood } = useContext(ShopContext);
   const [category, setCategory] = useState("Pizzas");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -14,10 +16,23 @@ function ListedFood() {
       item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Dummy delete handler
-  const handleDelete = (id) => {
-    console.log("Delete food with id:", id);
-    // TODO: connect with delete API and refresh list
+  // Delete handler
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this food?")) return;
+
+    try {
+      const res = await axios.delete(`${url}/api/food/delete`, { data : {id} });
+
+      if (res.data.success) {
+        toast.success("Food deleted successfully!");
+        fetchFood(); // 🔑 reload from backend
+      } else {
+        toast.error(res.data.message || "Failed to delete food");
+      }
+    } catch (error) {
+      console.error("Delete food error:", error);
+      toast.error(error.response?.data?.message || "Server error while deleting");
+    }
   };
 
   return (
@@ -115,9 +130,9 @@ function ListedFood() {
                   <div className="flex justify-end mt-2">
                     <button
                       onClick={() => handleDelete(item._id)}
-                      className="p-2 hover:text-red-500"
+                      className="p-2 hover:text-red-500 cursor-pointer"
                     >
-                      <Trash2 className="w-5 h-5" />
+                      <Trash2 className="w-5 h-5 cursor-pointer" />
                     </button>
                   </div>
                 </div>
@@ -134,9 +149,9 @@ function ListedFood() {
               <p className="hidden md:block">{item.category}</p>
               <button
                 onClick={() => handleDelete(item._id)}
-                className="hidden md:flex justify-center items-center text-red-500 hover:text-red-700 transition"
+                className="hidden md:flex justify-center items-center text-red-500 hover:text-red-700 transition cursor-pointer"
               >
-                <Trash2 className="w-5 h-5" />
+                <Trash2 className="w-5 h-5 cursor-pointer" />
               </button>
             </div>
           ))

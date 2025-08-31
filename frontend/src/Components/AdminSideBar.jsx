@@ -9,6 +9,7 @@ import {
   X,
   PlusCircle,
   ListOrdered,
+  Clipboard
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,6 +25,7 @@ function AdminSideBar() {
     { name: "Listed Food", path: "/myadmin/listitems", icon: <ListOrdered size={20} /> },
     { name: "Orders", path: "/myadmin/orders", icon: <ClipboardList size={20} /> },
     { name: "Reservations", path: "/myadmin/reservations", icon: <BookOpen size={20} /> },
+    { name: "Manual Orders", path: "/myadmin/manual-order", icon: <Clipboard size={20} /> },
   ];
 
   return (

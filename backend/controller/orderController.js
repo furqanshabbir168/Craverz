@@ -323,7 +323,7 @@ async function stripeWebhook(req, res) {
     res.status(400).send(`Webhook Error: ${err.message}`);
   }
 }
-// get orders
+// get user orders
 async function getOrders(req,res) {
     try {
     const userId = req.user.id; 
@@ -342,4 +342,201 @@ async function getOrders(req,res) {
     });
   }
 }
-export {placeCashOrder , getOrders , placeStripeOrder , stripeWebhook}
+// get all orders
+async function getAllOrders(req,res) {
+  try{
+    const orders = await orderModel.find().sort({ createdAt : -1 });
+
+    res.status(200).json({
+      success: true,
+      orders,
+    });
+  }catch(error){
+    console.error("Error fetching all orders:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch orders",
+    });
+  }
+}
+// get single order
+async function getOrderDetail(req,res) {
+  try {
+    const order = await orderModel.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error", error });
+  }
+}
+// add manuall order
+async function addManualOrder(req,res) {
+  try {
+    const { orderType, items, amount, paymentMethod, paymentStatus } = req.body;
+
+    // Basic validation
+    if (!orderType || !items || !amount || !paymentMethod) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
+    }
+
+    if (!["Dine-in", "Takeaway"].includes(orderType)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Manual order must be Dine-in or Takeaway" });
+    }
+
+    const newOrder = new orderModel({
+      orderType,
+      items,
+      amount,
+      status: "Completed", // manual orders are completed by default
+      payment: {
+        method: paymentMethod,
+        status: paymentStatus || "Paid", // assume paid if admin enters manually
+      },
+    });
+
+    const savedOrder = await newOrder.save();
+    res.status(201).json({ success: true, order: savedOrder });
+  } catch (error) {
+    console.error("Error adding manual order:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error });
+  }
+}
+// update order status
+// update order (status or payment or both)
+async function updateOrderStatus(req, res) {
+  try {
+    const orderId = req.params.id;
+    const updateData = req.body; // can be { status: "Delivered" } OR { "payment.status": "Paid" }
+
+    if (!orderId || !updateData || Object.keys(updateData).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Order ID and update data are required",
+      });
+    }
+
+
+    const updatedOrder = await orderModel.findByIdAndUpdate(
+      orderId,
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Order updated successfully",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.error("Update order error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}
+// get today's revenue and orders count
+async function getTodayStats(req, res) {
+  try {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0); // start of today
+
+    const end = new Date();
+    end.setHours(23, 59, 59, 999); // end of today
+
+    // match only today's orders
+    const todayOrders = await orderModel.find({
+      createdAt: { $gte: start, $lte: end },
+    });
+
+    // revenue = sum of amounts
+    const todayRevenue = todayOrders.reduce((sum, order) => sum + order.amount, 0);
+
+    res.status(200).json({
+      success: true,
+      todayOrders: todayOrders.length,
+      todayRevenue,
+    });
+  } catch (error) {
+    console.error("Error fetching today's stats:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching today's stats",
+    });
+  }
+}
+// Get sold categories
+async function getCategorySales(req, res) {
+  try {
+    const categorySales = await orderModel.aggregate([
+      { $unwind: "$items" }, // flatten items array
+      {
+        $group: {
+          _id: "$items.category",
+          totalSold: { $sum: "$items.quantity" }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          name: "$_id",
+          value: "$totalSold"
+        }
+      }
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: categorySales
+    });
+  } catch (error) {
+    console.error("Get Category Sales Error:", error);
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+}
+// Get order type distribution
+async function getOrderTypeDistribution(req, res) {
+  try {
+    const orderTypes = await orderModel.aggregate([
+      {
+        $group: {
+          _id: "$orderType",
+          count: { $sum: 1 }, // count how many orders per type
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          name: "$_id",
+          value: "$count",
+        },
+      },
+    ]);
+
+    res.status(200).json({ success: true, data: orderTypes });
+  } catch (error) {
+    console.error("Get Order Type Distribution Error:", error);
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+}
+
+
+
+
+export {placeCashOrder , getOrders , placeStripeOrder , stripeWebhook , getAllOrders , getOrderDetail , addManualOrder , updateOrderStatus , getTodayStats , getCategorySales , getOrderTypeDistribution}

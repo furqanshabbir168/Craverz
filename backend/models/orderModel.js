@@ -2,24 +2,43 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
+    // User ID only required for Delivery
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: function () {
+        return this.orderType === "Delivery";
+      },
     },
+
     items: {
       type: Array,
       required: true,
     },
+
     amount: {
       type: Number,
       required: true,
       min: 0,
     },
-    address: {
-      type: Object,
+
+    // Order type
+    orderType: {
+      type: String,
+      enum: ["Delivery", "Dine-in", "Takeaway"],
+      default: "Delivery",
       required: true,
     },
+
+    // Address only for Delivery
+    address: {
+      type: Object,
+      required: function () {
+        return this.orderType === "Delivery";
+      },
+    },
+
+    // Status logic
     status: {
       type: String,
       enum: [
@@ -27,10 +46,13 @@ const orderSchema = new mongoose.Schema(
         "Out for Delivery",
         "Delivered",
         "Cancelled",
-        "Confirmed",
+        "Completed" // for Dine-in & Takeaway
       ],
-      default: "Food Processing",
+      default: function () {
+        return this.orderType === "Delivery" ? "Food Processing" : "Completed";
+      },
     },
+
     payment: {
       method: {
         type: String,

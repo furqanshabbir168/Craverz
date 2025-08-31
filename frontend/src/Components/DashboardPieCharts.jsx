@@ -1,20 +1,36 @@
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { useContext, useState , useEffect} from "react";
+import { ShopContext } from "../Context/ShopContext";
+import axios from "axios";
 
 function DashboardPieCharts() {
-  // Pie Chart 1: Category Sales
-  const categoryData = [
-    { name: "Burgers", value: 400 },
-    { name: "Pizzas", value: 250 },
-    { name: "Drinks", value: 200 },
-    { name: "Desserts", value: 150 },
-  ];
+  const [categoryData, setCategoryData] = useState([]);
+  const [orderTypeData, setOrderTypeData] = useState([]);
+  const {url} = useContext(ShopContext);
+  
 
-  // Pie Chart 2: Order Type
-  const orderTypeData = [
-    { name: "Delivery", value: 60 },
-    { name: "Dine-in", value: 30 },
-    { name: "Takeaway", value: 10 },
-  ];
+  useEffect(() => {
+  const fetchCategorySales = async () => {
+    try {
+      const { data } = await axios.get(`${url}/api/order/get-category-sales`);
+      setCategoryData(data.data);
+    } catch (err) {
+      console.error("Error fetching category sales", err);
+    }
+  };
+
+  const fetchOrderTypeDistribution = async () => {
+    try {
+      const { data } = await axios.get(`${url}/api/order/get-order-type-distribution`);
+      setOrderTypeData(data.data);
+    } catch (err) {
+      console.error("Error fetching order type distribution", err);
+    }
+  };
+
+  fetchCategorySales();
+  fetchOrderTypeDistribution();
+}, [url]);
 
   // Colors for charts
   const COLORS_CATEGORY = ["#16a34a", "#dc2626", "#d97706", "#2563eb"]; // green, red, amber, blue

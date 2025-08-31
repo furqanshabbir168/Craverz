@@ -1,4 +1,4 @@
-import { CalendarCheck, Clock, Users, Package } from "lucide-react";
+import { CalendarCheck, Clock, Users, Loader2, ClipboardList } from "lucide-react";
 import { useEffect, useState, useContext } from "react";
 import { ShopContext } from "../Context/ShopContext";
 import axios from "axios";
@@ -10,7 +10,6 @@ function MyReservation() {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch user reservations
   useEffect(() => {
     async function fetchReservations() {
       try {
@@ -23,21 +22,36 @@ function MyReservation() {
         } else {
           toast.error(res.data.message || "Failed to fetch reservations");
         }
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error("Error fetching reservations:", error);
         toast.error("Error fetching reservations");
       } finally {
         setLoading(false);
       }
     }
 
-    if (token) {
-      fetchReservations();
-    }
+    if (token) fetchReservations();
   }, [url, token]);
 
+  const formatDate = (isoString) => {
+    const date = new Date(isoString);
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="animate-spin text-red-500" size={40} />
+      </div>
+    );
+  }
+
   // If no reservations
-  if (!loading && reservations.length === 0) {
+  if (reservations.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
         <CalendarCheck size={60} className="text-gray-400 mb-4" />
@@ -45,7 +59,7 @@ function MyReservation() {
           You have no reservations yet
         </h2>
         <p className="text-gray-500 mt-2">
-          Looks like you haven’t made any reservations request yet.
+          Looks like you haven’t made any reservations yet.
         </p>
         <Link
           to="/reservations"
@@ -60,46 +74,126 @@ function MyReservation() {
   return (
     <div className="flex flex-col p-4">
       {/* Banner */}
-      <div className="flex flex-row items-center gap-2 bg-red-500 text-white p-2 rounded-lg mb-4">
+      <div className="flex flex-row items-center gap-2 bg-red-500 text-white p-3 rounded-lg mb-6">
         <CalendarCheck />
         <p className="text-sm">
-          Your reservation has been received! We will contact you soon to confirm your booking. If for some reason our confirmation call gets delayed, please feel free to reach us directly through the contact information provided on our website.
+          Your reservation has been received! We will contact you soon to
+          confirm your booking. If for some reason our confirmation call gets
+          delayed, please feel free to reach us directly through the contact
+          information provided on our website.
         </p>
       </div>
 
+      {/* Table Header (desktop only) */}
+      <div className="hidden md:grid grid-cols-6 font-semibold border-b pb-2 mb-3 text-gray-700">
+        <p>Reservation</p>
+        <p>Name</p>
+        <p>Guests</p>
+        <p>Date & Time</p>
+        <p>Status</p>
+        <p>Action</p>
+      </div>
+
       {/* Reservations List */}
-      <div className="space-y-6">
+      <div className="space-y-4">
         {reservations.map((res) => (
           <div
             key={res._id}
-            className="border rounded-lg shadow-sm p-4"
+            className="border p-4 rounded-lg shadow-sm hover:shadow-md transition"
           >
-            {/* Reservation Header */}
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="font-semibold text-gray-700">
-                Reservation #{res._id.slice(-6)}
-              </h2>
-              <span className="flex items-center gap-1 text-sm capitalize text-gray-600">
-                <Package size={16} /> {res.status}
-              </span>
+            {/* Desktop Layout */}
+            <div className="hidden md:grid md:grid-cols-6 items-center gap-4">
+              {/* Reservation ID */}
+              <div className="flex items-center gap-2 font-semibold text-gray-800">
+                <ClipboardList className="text-red-500" size={20} />
+                #{res._id.slice(-6)}
+              </div>
+
+              {/* Name */}
+              <p className="text-gray-700">{res.name}</p>
+
+              {/* Guests */}
+              <p className="flex items-center gap-1 text-gray-700">
+                <Users size={16} /> {res.numberOfGuests}
+              </p>
+
+              {/* Date & Time */}
+              <p className="flex flex-col text-gray-700 text-sm">
+                <span className="flex items-center gap-1">
+                  <CalendarCheck size={16} /> {formatDate(res.date)}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Clock size={16} /> {res.time}
+                </span>
+              </p>
+
+              {/* Status */}
+              <p className="capitalize text-gray-700">{res.status}</p>
+
+              {/* Action */}
+              <Link
+                to={`/myaccount/reservations/${res._id}`}
+                className="text-red-500 font-medium hover:underline"
+              >
+                View →
+              </Link>
             </div>
 
-            {/* Reservation Details */}
-            <div className="space-y-2 text-gray-700">
-              <p><span className="font-semibold">Name:</span> {res.name}</p>
-              <p><span className="font-semibold">Email:</span> {res.email}</p>
-              <p className="flex items-center gap-2">
-                <CalendarCheck size={16} /> Date: {new Date(res.date).toLocaleDateString()}
-              </p>
-              <p className="flex items-center gap-2">
-                <Clock size={16} /> Time: {res.time}
-              </p>
-              <p className="flex items-center gap-2">
-                <Users size={16} /> Guests: {res.numberOfGuests}
-              </p>
-              <p className="text-sm text-gray-500">
-                Requested on: {new Date(res.createdAt).toLocaleString()}
-              </p>
+            {/* Mobile Layout (only essential info) */}
+            <div className="md:hidden flex flex-col gap-3">
+              {/* Reservation ID */}
+              <div className="flex items-center gap-2">
+                <ClipboardList className="text-red-500" size={20} />
+                <span className="font-semibold text-gray-800">
+                  Reservation #{res._id.slice(-6)}
+                </span>
+              </div>
+
+              {/* Guests */}
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-1 text-gray-600 text-sm">
+                  <Users size={16} /> Guests
+                </span>
+                <span className="text-gray-800 font-medium">
+                  {res.numberOfGuests}
+                </span>
+              </div>
+
+              {/* Date & Time */}
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-1 text-gray-600 text-sm">
+                  <CalendarCheck size={16} /> Date & Time
+                </span>
+                <span className="text-gray-700 text-sm">
+                  {formatDate(res.date)} - {res.time}
+                </span>
+              </div>
+
+              {/* Status */}
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600 text-sm">Status</span>
+                <span
+                  className={`font-medium ${
+                    res.status === "pending"
+                      ? "text-yellow-600"
+                      : res.status === "confirmed"
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {res.status}
+                </span>
+              </div>
+
+              {/* Action */}
+              <div className="flex justify-end">
+                <Link
+                  to={`/myaccount/reservations/${res._id}`}
+                  className="text-red-500 font-medium hover:underline"
+                >
+                  View →
+                </Link>
+              </div>
             </div>
           </div>
         ))}

@@ -54,13 +54,13 @@ function Cart() {
       <div className="space-y-4">
         {cart.map((food) => (
           <div
-            key={food.id}
+            key={food._id}
             className="flex flex-col md:grid md:grid-cols-6 gap-4 items-center border p-4 rounded-lg shadow-sm"
           >
             {/* Mobile Layout (card style) */}
             <div className="flex md:hidden w-full gap-4">
               <img
-                src={food.img}
+                src={food.image}
                 alt={food.name}
                 className="w-20 h-20 rounded-lg object-cover"
               />
@@ -75,21 +75,21 @@ function Cart() {
                 <div className="flex items-center justify-between mt-2">
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => decreaseQty(food.id)}
+                      onClick={() => decreaseQty(food._id)}
                       className="p-1 border rounded hover:bg-gray-200"
                     >
                       <Minus size={16} />
                     </button>
                     <span className="px-2">{food.quantity}</span>
                     <button
-                      onClick={() => increaseQty(food.id)}
+                      onClick={() => increaseQty(food._id)}
                       className="p-1 border rounded hover:bg-gray-200"
                     >
                       <Plus size={16} />
                     </button>
                   </div>
                   <button
-                    onClick={() => removeFromCart(food.id)}
+                    onClick={() => removeFromCart(food._id)}
                     className="p-1 hover:text-red-500 cursor-pointer"
                   >
                     <Trash
@@ -105,7 +105,7 @@ function Cart() {
 
             {/* Desktop Layout */}
             <img
-              src={food.img}
+              src={food.image}
               alt={food.name}
               className="hidden md:block w-20 h-20 rounded-lg object-cover"
             />
@@ -113,14 +113,14 @@ function Cart() {
             <p className="hidden md:block">${food.price}</p>
             <div className="hidden md:flex items-center gap-2">
               <button
-                onClick={() => decreaseQty(food.id)}
+                onClick={() => decreaseQty(food._id)}
                 className="p-1 border rounded hover:bg-gray-200"
               >
                 <Minus size={16} />
               </button>
               <span className="px-2">{food.quantity}</span>
               <button
-                onClick={() => increaseQty(food.id)}
+                onClick={() => increaseQty(food._id)}
                 className="p-1 border rounded hover:bg-gray-200"
               >
                 <Plus size={16} />
@@ -128,7 +128,7 @@ function Cart() {
             </div>
             <p className="hidden md:block">${food.price * food.quantity}</p>
             <button
-              onClick={() => removeFromCart(food.id)}
+              onClick={() => removeFromCart(food._id)}
               className="hidden md:block p-1 hover:text-red-500 cursor-pointer"
             >
               <Trash

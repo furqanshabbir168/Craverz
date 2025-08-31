@@ -5,16 +5,16 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 function MenuSection() {
-  const { Menu, addToCart, cart } = useContext(ShopContext);
+  const { food, addToCart, cart } = useContext(ShopContext);
   const [category, setCategory] = useState("Pizzas");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const searchedFood = Menu.filter((food) =>
-    food.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const searchedFood = food.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // check if food already in cart
-  const isInCart = (id) => cart.some((item) => item.id === id);
+  const isInCart = (_id) => cart.some((item) => item._id === _id);
 
   return (
     <div className="bg-gray-100">
@@ -100,10 +100,10 @@ function MenuSection() {
           {searchedFood
             .filter((item) => item.category === category)
             .map((product, index) => {
-              const added = isInCart(product.id);
+              const added = isInCart(product._id);
               return (
                 <motion.div
-                  key={product.id}
+                  key={product._id}
                   className="bg-white shadow-md rounded-xl p-4 flex flex-col items-center text-center w-[270px] sm:w-60"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -115,7 +115,7 @@ function MenuSection() {
                   viewport={{ once: true, amount: 0.2 }}
                 >
                   <img
-                    src={product.img}
+                    src={product.image}
                     alt={product.name}
                     className="w-40 h-40 object-cover rounded-full border-4 border-red-100 shadow-sm"
                   />

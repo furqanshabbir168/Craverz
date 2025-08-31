@@ -1,10 +1,16 @@
 import { Utensils } from "lucide-react";
 import { motion } from "framer-motion";
-import PopularFoods from "../assets/PopularFoods";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { ShopContext } from "../Context/ShopContext";
 
 function PopularFood() {
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
+  const { food, loadingFood } = useContext(ShopContext);
+
+  // filter only popular food
+  const popularFoods = food.filter((dish) => dish.isPopular);
+
   return (
     <div className="flex flex-col items-center px-4 sm:px-10 py-8 mx-auto bg-gray-200">
       {/* Header */}
@@ -26,36 +32,44 @@ function PopularFood() {
 
       {/* Cards */}
       <div className="flex flex-wrap justify-center gap-6 w-full">
-        {PopularFoods.map((dish, index) => (
-          <motion.div
-            key={dish.id}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.6,
-              delay: 0.5 + index * 0.5,
-              ease: "easeOut",
-            }}
-            viewport={{ once: true, amount: 0.2 }}
-            className="bg-white shadow-md rounded-xl p-4 w-full sm:w-60 max-w-[270px] flex flex-col items-center text-center"
-          >
-            <img
-              src={dish.img}
-              alt={dish.title}
-              className="w-36 h-36 sm:w-40 sm:h-40 object-cover rounded-full border-4 border-red-100 shadow-sm"
-            />
-            <h3 className="mt-4 text-lg font-semibold text-gray-800">{dish.title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{dish.description}</p>
-            <p className="text-red-500 font-bold text-base mt-2">${dish.price}</p>
-          </motion.div>
-        ))}
+        {loadingFood ? (
+          <p className="text-gray-600">Loading popular foods...</p>
+        ) : popularFoods.length > 0 ? (
+          popularFoods.map((dish, index) => (
+            <motion.div
+              key={dish._id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.6,
+                delay: 0.3 + index * 0.2,
+                ease: "easeOut",
+              }}
+              viewport={{ once: true, amount: 0.2 }}
+              className="bg-white shadow-md rounded-xl p-4 w-full sm:w-60 max-w-[270px] flex flex-col items-center text-center"
+            >
+              <img
+                src={dish.image}
+                alt={dish.name}
+                className="w-36 h-36 sm:w-40 sm:h-40 object-cover rounded-full border-4 border-red-100 shadow-sm"
+              />
+              <h3 className="mt-4 text-lg font-semibold text-gray-800">
+                {dish.name}
+              </h3>
+              <p className="text-sm text-gray-600 mt-1">{dish.description}</p>
+              <p className="text-red-500 font-bold text-base mt-2">
+                ${dish.price}
+              </p>
+            </motion.div>
+          ))
+        ) : (
+          <p className="text-gray-500">No popular food found.</p>
+        )}
       </div>
 
       {/* View All Button */}
       <button
-        onClick={() => {
-          naviagte('/shop');
-        }}
+        onClick={() => navigate("/shop")}
         className="mt-8 px-6 py-3 bg-red-500 text-white font-medium rounded-full hover:bg-red-600 transition cursor-pointer"
       >
         VIEW ALL ITEMS

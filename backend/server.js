@@ -15,13 +15,13 @@ const PORT = 4000;
 const app = express();
 
 // Middleware
-// app.use(cors());
-app.use(cors({
-    origin: [
-    "https://cravez.vercel.app",
-  ],
-  credentials: true
-}));
+app.use(cors());
+// app.use(cors({
+//     origin: [
+//     "https://cravez.vercel.app",
+//   ],
+//   credentials: true
+// }));
 
 app.post(
   "/api/webhook",

@@ -8,8 +8,37 @@ import {
 } from "lucide-react";
 import dp from "../assets/profile.png";
 import DashboardPieCharts from "./DashboardPieCharts";
+import { useState , useEffect, useContext} from "react";
+import axios from "axios";
+import { ShopContext } from "../Context/ShopContext";
 
 function AdminDashboard() {
+  const {url} = useContext(ShopContext);
+  const [ todayRevenue , setTodayRevenue ] = useState();
+  const [ todayOrders , setTodayOrders ] = useState();
+  const [ todayReservations , setTodayReservation ] = useState();
+  const [ totalDishes , setTotalDishes ] = useState();
+  ////
+  useEffect(() => {
+  const fetchStats = async () => {
+    try {
+      const { data } = await axios.get(`${url}/api/order/today-stats`);
+      setTodayRevenue(data.todayRevenue);
+      setTodayOrders(data.todayOrders);
+
+      const { data: reservationData } = await axios.get(`${url}/api/reservation/today-reservations`);
+      setTodayReservation(reservationData.todayReservations);
+
+      const { data : dishesData } = await axios.get(`${url}/api/food/total`);
+      setTotalDishes(dishesData.totalDishes);
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
+  fetchStats();
+}, [url]);
+
+
   return (
     <div className="flex flex-col w-full bg-gray-50">
       {/* Top Navbar */}
@@ -53,7 +82,7 @@ function AdminDashboard() {
           </div>
           <div>
             <p className="text-sm text-white">Today's Revenue</p>
-            <h2 className="text-xl font-bold text-white">$1,250</h2>
+            <h2 className="text-xl font-bold text-white">$ {todayRevenue}</h2>
           </div>
         </div>
 
@@ -64,7 +93,7 @@ function AdminDashboard() {
           </div>
           <div>
             <p className="text-sm text-white">Today's Orders</p>
-            <h2 className="text-xl font-bold text-white">58</h2>
+            <h2 className="text-xl font-bold text-white">{todayOrders}</h2>
           </div>
         </div>
 
@@ -74,8 +103,8 @@ function AdminDashboard() {
             <Star className="w-6 h-6 text-red-600" />
           </div>
           <div>
-            <p className="text-sm text-white">Total Customers</p>
-            <h2 className="text-xl font-bold text-white">132</h2>
+            <p className="text-sm text-white">Today's Reservations</p>
+            <h2 className="text-xl font-bold text-white">{todayReservations}</h2>
           </div>
         </div>
 
@@ -86,7 +115,7 @@ function AdminDashboard() {
           </div>
           <div>
             <p className="text-sm text-white">Listed Dishes</p>
-            <h2 className="text-xl font-bold text-white">12</h2>
+            <h2 className="text-xl font-bold text-white">{totalDishes}</h2>
           </div>
         </div>
       </div>

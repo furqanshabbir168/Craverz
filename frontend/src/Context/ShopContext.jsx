@@ -5,7 +5,8 @@ import Menu from "../assets/Menu.js";
 export const ShopContext = createContext(null);
 
 function ShopContextProvider(props) {
-  const url = "https://craverz.vercel.app";
+  
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   // 🔑 User token
   const [token, setTokenState] = useState("");
@@ -74,43 +75,44 @@ function ShopContextProvider(props) {
   }, []);
 
   // --- Add to cart function ---
-  const addToCart = (food) => {
-    setCart((prevCart) => {
-      const existing = prevCart.find((item) => item.id === food.id);
-      if (existing) {
-        return prevCart.map((item) =>
-          item.id === food.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        return [...prevCart, { ...food, quantity: 1 }];
-      }
-    });
-  };
+const addToCart = (food) => {
+  setCart((prevCart) => {
+    const existing = prevCart.find((item) => item._id === food._id);
+    if (existing) {
+      return prevCart.map((item) =>
+        item._id === food._id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    } else {
+      return [...prevCart, { ...food, quantity: 1 }];
+    }
+  });
+};
 
-  // --- Remove completely from cart ---
-  const removeFromCart = (foodId) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== foodId));
-  };
+// --- Remove completely from cart ---
+const removeFromCart = (foodId) => {
+  setCart((prevCart) => prevCart.filter((item) => item._id !== foodId));
+};
 
-  // --- Increase quantity ---
-  const increaseQty = (foodId) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === foodId ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
-  };
+// --- Increase quantity ---
+const increaseQty = (foodId) => {
+  setCart((prevCart) =>
+    prevCart.map((item) =>
+      item._id === foodId ? { ...item, quantity: item.quantity + 1 } : item
+    )
+  );
+};
 
-  // --- Decrease quantity (but not below 1) ---
-  const decreaseQty = (foodId) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === foodId
-          ? { ...item, quantity: Math.max(1, item.quantity - 1) }
-          : item
-      )
-    );
-  };
+// --- Decrease quantity ---
+const decreaseQty = (foodId) => {
+  setCart((prevCart) =>
+    prevCart.map((item) =>
+      item._id === foodId
+        ? { ...item, quantity: Math.max(1, item.quantity - 1) }
+        : item
+    )
+  );
+};
+
 
   // --- Clear cart (use after successful checkout) ---
   const clearCart = () => {

@@ -22,10 +22,10 @@ function SideBar() {
     { name: "Home", path: "/", icon: <Home size={20} /> },
     { name: "Dashboard", path: "/myaccount/dashboard", icon: <LayoutDashboard size={20} /> },
     { name: "My Profile", path: "/myaccount/profile", icon: <User size={20} /> },
-    { name: "My Orders", path: "/myaccount/orders", icon: <ListOrdered size={20} /> },
     { name: "My Cart", path: "/myaccount/cart", icon: <ShoppingCart size={20} /> },
+    { name: "My Orders", path: "/myaccount/orders", icon: <ListOrdered size={20} /> },
     { name: "Reservation", path: "/myaccount/reservations", icon: <BookOpen size={20} /> },
-    { name: "Help & Support", path: "/account/help", icon: <HelpCircle size={20} /> },
+    { name: "Help & Support", path: "/contact", icon: <HelpCircle size={20} /> },
   ];
 
   return (

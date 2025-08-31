@@ -2,9 +2,15 @@ import { Utensils } from "lucide-react";
 import { motion } from "framer-motion";
 import BestSellingFood from "../assets/BestSellingFood"; // Your data file
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { ShopContext } from "../Context/ShopContext";
 
 function BestSellingFoodSection() {
   const navigate = useNavigate();
+  const { food, } = useContext(ShopContext);
+
+  const BestSellingFood = food.filter((dish) => dish.isBestSeller);
+
   return (
     <div className="flex flex-col items-center p-4 sm:px-10 mx-auto bg-gray-200">
       {/* Header */}
@@ -40,11 +46,11 @@ function BestSellingFoodSection() {
             className="bg-white shadow-md rounded-xl p-4 w-[270px] sm:w-60 flex flex-col items-center text-center"
           >
             <img
-              src={dish.img}
-              alt={dish.title}
+              src={dish.image}
+              alt={dish.name}
               className="w-40 h-40 object-cover rounded-full border-4 border-red-100 shadow-sm"
             />
-            <h3 className="mt-4 text-lg font-semibold text-gray-800">{dish.title}</h3>
+            <h3 className="mt-4 text-lg font-semibold text-gray-800">{dish.name}</h3>
             <p className="text-sm text-gray-600 mt-1">{dish.description}</p>
             <p className="text-red-500 font-bold text-base mt-2">${dish.price}</p>
           </motion.div>

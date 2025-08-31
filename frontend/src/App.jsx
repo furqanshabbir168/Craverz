@@ -38,6 +38,13 @@ import AdminDashboard from "./Components/AdminDashboard";
 import AddFood from "./Components/AddFood";
 import ListedFood from "./Components/ListedFood";
 import CravezChatBot from "./Components/ChatBot";
+import AllOrders from "./Components/AllOrders";
+import OrderDetails from "./Components/OrderDetails";
+import MyOrderDetails from "./Components/MyOrderDetails";
+import MyReservationDetails from "./Components/MyReservationDetails";
+import AllReservations from "./Components/AllReservations";
+import ReservationDetails from "./Components/ReservationDetails";
+import ManualOrders from "./Components/ManualOrders";
 
 // import ManageUsers from "./Components/ManageUsers";
 // add more admin components if needed
@@ -110,7 +117,9 @@ function App() {
           <Route path="/myaccount/cart" element={<Cart />} />
           <Route path="/myaccount/checkout" element={<Checkout/>}/>
           <Route path="/myaccount/orders" element={<Orders/>}/>
+          <Route path="/myaccount/orders/:id" element={<MyOrderDetails/>}/>
           <Route path="/myaccount/reservations" element={<MyReservation/>}/>
+          <Route path="/myaccount/reservations/:id" element={<MyReservationDetails/>}/>
         </Route>
 
         {/* Protected Admin Routes */}
@@ -121,6 +130,11 @@ function App() {
           <Route path="/myadmin/dashboard" element={<AdminDashboard />} />
           <Route path="/myadmin/additems" element={<AddFood/>}/>
           <Route path="/myadmin/listitems" element={<ListedFood/>}/>
+          <Route path="/myadmin/orders" element={<AllOrders/>}/>
+          <Route path="/myadmin/orders/:id" element={<OrderDetails/>}/>
+          <Route path="/myadmin/reservations" element={<AllReservations/>}/>
+          <Route path="/myadmin/reservations/:id" element={<ReservationDetails/>}/>
+          <Route path="/myadmin/manual-order" element={<ManualOrders/>}/>
           {/* add more admin subroutes here */}
         </Route>
       </Routes>
