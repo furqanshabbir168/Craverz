@@ -96,7 +96,7 @@ function MenuSection() {
         </div>
 
         {/* Products */}
-        <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-6 w-full px-2 mt-8">
+        <div className="flex flex-wrap justify-center gap-6 w-full px-2 mt-8">
           {searchedFood
             .filter((item) => item.category === category)
             .map((product, index) => {
@@ -117,7 +117,7 @@ function MenuSection() {
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-30 h-30 object-cover rounded-full border-4 border-red-100 shadow-sm"
+                    className="w-40 h-40 object-cover rounded-full border-4 border-red-100 shadow-sm"
                   />
                   <h3 className="mt-4 text-lg font-semibold text-gray-800">
                     {product.name}
