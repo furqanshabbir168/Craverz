@@ -37,7 +37,6 @@ import AdminLayout from "./Components/AdminLayout";
 import AdminDashboard from "./Components/AdminDashboard";
 import AddFood from "./Components/AddFood";
 import ListedFood from "./Components/ListedFood";
-import CravezChatBot from "./Components/ChatBot";
 import AllOrders from "./Components/AllOrders";
 import OrderDetails from "./Components/OrderDetails";
 import MyOrderDetails from "./Components/MyOrderDetails";
@@ -45,6 +44,7 @@ import MyReservationDetails from "./Components/MyReservationDetails";
 import AllReservations from "./Components/AllReservations";
 import ReservationDetails from "./Components/ReservationDetails";
 import ManualOrders from "./Components/ManualOrders";
+import Chatbot from "./Components/ChatBot";
 
 // import ManageUsers from "./Components/ManageUsers";
 // add more admin components if needed
@@ -141,7 +141,7 @@ function App() {
 
       {/* Footer only on public routes */}
       {!isAccountRoute && !isAdminRoute && <Footer />}
-      <CravezChatBot/>
+      <Chatbot/>
     </div>
   );
 }

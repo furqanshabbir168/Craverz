@@ -10,6 +10,7 @@ import orderRouter from './routes/orderRoutes.js';
 import { stripeWebhook } from './controller/orderController.js';
 import reservationRouter from './routes/reservationRoutes.js';
 import faqRouter from './routes/faqRoutes.js';
+import aiRouter from './routes/aiRoutes.js';
 
 const PORT = 4000;
 const app = express();
@@ -46,6 +47,7 @@ app.use('/api/food',foodRouter)
 app.use('/api/order',orderRouter)
 app.use('/api/reservation',reservationRouter)
 app.use('/api/faq',faqRouter)
+app.use('/api/ai',aiRouter)
 
 // inngest routes
 app.use("/api/inngest", serve({ client: inngest, functions }));

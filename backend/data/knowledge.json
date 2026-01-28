@@ -1,0 +1,102 @@
+[
+  {
+    "title": "Placing an Order",
+    "content": "To place an order on Cravez, start by browsing our menu. You can click on categories to see different types of dishes or use the search bar to find a specific item. Once you find what you like, select the quantity and click 'Add to Cart.' After adding all items, go to the cart and click 'Checkout.' You can choose delivery to your address or pickup at the restaurant. Follow the instructions to complete your payment and confirm your order."
+  },
+  {
+  "title": "Account Creation",
+  "content": "Creating an account on Cravez is quick and easy. Simply click 'Sign Up' and enter your email, password, and basic details. You **must create an account to place an order**. Having an account also gives you benefits like faster checkout for future orders, access to your order history, earning and redeeming loyalty points, and receiving exclusive discounts and promotions."
+  },
+  {
+    "title": "Login / Logout",
+    "content": "To log in, click the 'Login' button and enter your registered email and password. If you forget your password, click 'Forgot Password' to reset it via email. Once logged in, you can manage your orders and account settings. To log out, click the 'Logout' button in your profile menu to securely end your session."
+  },
+  {
+    "title": "Menu Navigation",
+    "content": "The Cravez menu is designed for easy browsing. You can filter items by category, search for specific dishes by name, and see popular or recommended dishes at the top of each category. Click on any item to view details, add to cart, or customize options if available."
+  },
+  {
+    "title": "Delivery Options",
+    "content": "Cravez offers two main delivery options: 1. Delivery: Get your food delivered to your doorstep. Choose your delivery address at checkout and see estimated delivery time. Delivery is available in designated areas only. 2. Pickup: Collect your order directly from the restaurant. Choose pickup at checkout and select the time when you want to pick up your order."
+  },
+  {
+    "title": "Table Reservation",
+    "content": "To reserve a table at Cravez, go to the reservation page, select the date and time you want, and choose the number of guests. Once you confirm your reservation, you will receive a confirmation notification. Please note that reservations are subject to availability."
+  },
+  {
+    "title": "Order Cancellation",
+    "content": "Orders at Cravez can only be cancelled within 2 minutes after placing them. After this period, the order is processed and cannot be cancelled. Please double-check your items before confirming your order to avoid issues."
+  },
+  {
+    "title": "Payment Methods",
+    "content": "Cravez offers multiple payment options for your convenience. You can pay using credit or debit cards, Stripe, cash on delivery (COD), or supported online wallets. Choose your preferred method at checkout."
+  },
+  {
+    "title": "Order Tracking",
+    "content": "Once your order is confirmed, you can track it in real-time through the Cravez app or website. You will see updates on order preparation, dispatch, and estimated delivery time so you know exactly when your food will arrive."
+  },
+  {
+    "title": "Promotions & Discounts",
+    "content": "Cravez regularly offers promotions and discounts. You can apply coupon codes at checkout, use your earned loyalty points to get discounts, and enjoy seasonal offers. Make sure to check the promotions section for current deals."
+  },
+  {
+    "title": "Contact & Support",
+    "content": "If you need help with Cravez, you can contact our support team via live chat on the website/app, email, or phone. Our team typically responds within a few hours during business hours. For urgent issues with orders, using live chat or phone is recommended for faster assistance."
+  },
+  {
+    "title": "Account Settings",
+    "content": "In Cravez, you can manage your account by going to Account Settings. Here, you can edit your profile, change your email, update your preferences, and manage notification settings. Make sure to save changes after updating your information."
+  },
+  {
+    "title": "Notifications",
+    "content": "Cravez sends notifications via email and SMS for your orders, table reservations, and promotions. You will receive updates when your order is confirmed, dispatched, or delivered. You can control which notifications you receive in Account Settings."
+  },
+  {
+    "title": "Menu Updates",
+    "content": "Cravez regularly updates its menu with new items, seasonal offers, and special dishes. Menu categories are updated automatically, and you can view new additions or seasonal promotions directly on the website or app."
+  },
+  {
+    "title": "Privacy & Data Policy",
+    "content": "Cravez takes your privacy seriously. All user data is handled securely, stored safely, and used only to provide services and improve your experience. We do not share your personal information with third parties without consent. For full details, please refer to our Privacy Policy."
+  },
+  {
+    "title": "Refund & Complaints",
+    "content": "If you experience an issue with your order at Cravez, you can request a refund or submit a complaint via the support page, live chat, or email. Please provide your order details and describe the issue clearly. Our team will review your request and respond as quickly as possible."
+  },
+  {
+    "title": "Operating Hours",
+    "content": "Cravez operates daily for both delivery and pickup. Delivery and pickup are available from [insert hours, e.g., 10:00 AM to 10:00 PM]. Table reservations can also be made during these hours. Please check the app or website for any special holiday timings."
+  },
+  {
+    "title": "Special Instructions",
+    "content": "When placing an order on Cravez, you can add special instructions such as allergy information, custom requests, or seating preferences. Simply use the 'Add Note' field on the item or checkout page to communicate your requirements."
+  },
+  {
+    "title": "Popular Dishes",
+    "content": "Cravez highlights its best-selling and recommended dishes on the menu. Popular dishes are displayed in each category to help you quickly find customer favorites. Check the menu regularly for new top picks."
+  },
+  {
+    "title": "Order History",
+    "content": "Once you have an account on Cravez, you can view all your past orders in the Order History section. From there, you can easily reorder your favorite items, track past payments, and review previous order details."
+  },
+  {
+    "title": "Technical Issues",
+    "content": "If you face technical issues on Cravez, such as login problems, page errors, or payment failures, try refreshing the page, clearing your browser cache, or restarting the app. If the problem persists, contact our support team via live chat or email with details about the issue."
+  },
+  {
+    "title": "Account Deletion",
+    "content": "To delete your Cravez account, go to Account Settings and select 'Delete Account.' Deleting your account will remove all personal data, order history, and loyalty points. This action is permanent and cannot be undone."
+  },
+  {
+    "title": "Loyalty & Rewards",
+    "content": "Cravez offers a loyalty program where you earn points for every order. Points can be redeemed for discounts on future orders. You can check your points balance and available rewards in your account. Keep ordering to maximize your benefits!"
+  },
+  {
+    "title": "Multiple Orders",
+    "content": "Cravez allows you to place multiple orders at once. You can manage separate deliveries by adding different addresses or scheduling different pickup times for each order. Ensure each order is confirmed before placing the next."
+  },
+  {
+    "title": "Website & App Features",
+    "content": "Cravez website and app offer features like online ordering, table reservations, real-time order tracking, personalized recommendations based on your preferences, and notifications for promotions and order updates. Explore all features to get the best experience."
+  }
+]
