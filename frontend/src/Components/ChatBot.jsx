@@ -116,28 +116,31 @@ const Chatbot = () => {
             <div ref={messagesEndRef} />
           </div>
 
+        
           {/* Input */}
-          <div className="border-t p-3 flex items-center gap-2 bg-white rounded-b-xl">
-            <input
-              type="text"
-              placeholder="Ask me about Cravez..."
-              className="flex-1 border border-gray-300 rounded-full 
-                         px-4 py-2 focus:outline-none 
-                         focus:ring-2 focus:ring-red-500"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            />
+<div className="border-t px-3 py-2 flex items-center gap-2 bg-white rounded-b-xl">
+  <input
+    type="text"
+    placeholder="Ask me about Cravez..."
+    className="flex-1 min-w-0 border border-gray-300 
+               rounded-full px-4 py-2 
+               focus:outline-none focus:ring-2 
+               focus:ring-red-500"
+    value={input}
+    onChange={(e) => setInput(e.target.value)}
+    onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+  />
 
-            <button
-              onClick={sendMessage}
-              className="p-3 bg-red-500 hover:bg-red-600 
-                         text-white rounded-full flex 
-                         items-center justify-center shrink-0"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </div>
+  <button
+    onClick={sendMessage}
+    className="w-11 h-11 bg-red-500 hover:bg-red-600 
+               text-white rounded-full flex 
+               items-center justify-center flex-shrink-0"
+  >
+    <Send className="w-4 h-4" />
+  </button>
+</div>
+
         </div>
       )}
 
