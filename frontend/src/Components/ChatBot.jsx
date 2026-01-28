@@ -68,7 +68,7 @@ const Chatbot = () => {
         <div
           className="fixed bottom-20 right-3 sm:right-5 w-[95%] sm:w-96 
                      max-h-[75dvh] bg-white shadow-xl rounded-xl 
-                     flex flex-col z-50 h-[500px]"
+                     flex flex-col z-50 h-[500px] p-2"
         >
           {/* Header */}
           <div className="flex items-center justify-between bg-red-500 
